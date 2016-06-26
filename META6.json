@@ -20,7 +20,8 @@
   "resources" : [ ],
   "source-url" : "git://github.com/skaji/mi6.git",
   "test-depends" : [
-    "File::Temp"
+    "File::Temp",
+    "Test::META"
   ],
   "version" : "*"
 }

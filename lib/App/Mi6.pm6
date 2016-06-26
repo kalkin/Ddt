@@ -33,6 +33,7 @@ multi method cmd('new', $module is copy) {
     my %content = App::Mi6::Template::template(:$module, :$!author, :$!email, :$!year);
     my %map = <<
         $module-file module
+        t/00-meta.t  test-meta
         t/01-basic.t test
         LICENSE      license
         .gitignore   gitignore
@@ -151,7 +152,7 @@ method regenerate-meta-info($module, $module-file) {
         perl          => $perl,
         authors       => $authors,
         depends       => $already<depends> || [],
-        test-depends  => $already<test-depends> || [],
+        test-depends  => $already<test-depends> || ["Test::META"],
         build-depends => $already<build-depends> || [],
         description   => find-description($module-file) || $already<description> || "",
         provides      => find-provides(),
