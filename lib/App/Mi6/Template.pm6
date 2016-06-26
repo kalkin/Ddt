@@ -10,6 +10,16 @@ gitignore => qq:to/EOF/,
 /resources/*.so
 /resources/*.dylib
 .precomp/
+# Vim swap files
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+# Vim session
+Session.vim
+# temporary
+.netrwhist
+*~
+# Vim auto-generated tag files
+tags
 EOF
 
 travis => qq:to/EOF/,
