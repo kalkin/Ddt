@@ -38,6 +38,17 @@ pass "replace me";
 done-testing;
 END_OF_TEST
 
+test-meta => q:to/END_OF_META_TEST/,
+use v6;
+use Test;
+use Test::META;
+
+plan 1;
+
+# That's it
+meta-ok();
+END_OF_META_TEST
+
 module => qq:to/EOD_OF_MODULE/,
 use v6;
 unit class $module;
