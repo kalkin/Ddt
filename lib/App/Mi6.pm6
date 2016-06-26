@@ -3,6 +3,7 @@ use App::Mi6::Template;
 use App::Mi6::JSON;
 use File::Find;
 use Shell::Command;
+use Legal::Licenses;
 
 unit class App::Mi6;
 
@@ -20,7 +21,7 @@ my $to-file = -> $module {
     'lib/' ~ $module.subst('::', '/', :g) ~ '.pm6';
 };
 
-multi method cmd('new', $module is copy) {
+multi method cmd('new', $module is copy, $license-name) {
     $module ~~ s:g/ '-' /::/;
     my $main-dir = $module;
     $main-dir ~~ s:g/ '::' /-/;
@@ -30,17 +31,20 @@ multi method cmd('new', $module is copy) {
     my $module-file = $to-file($module);
     my $module-dir = $module-file.IO.dirname.Str;
     mkpath($_) for $module-dir, "t", "bin";
-    my %content = App::Mi6::Template::template(:$module, :$!author, :$!email, :$!year);
+    my $license = Legal::Licenses::from-string($license-name).new("$!author <$!email>" );
+    my %content = App::Mi6::Template::template(:$module, :$license);
     my %map = <<
         $module-file module
         t/00-meta.t  test-meta
         t/01-basic.t test
-        LICENSE      license
         .gitignore   gitignore
         .travis.yml  travis
     >>;
     for %map.kv -> $f, $c {
         spurt($f, %content{$c});
+    }
+    for $license.files().kv -> $f, $text {
+        spurt($f, $text);
     }
     self.cmd("build");
     my $devnull = open $*SPEC.devnull, :w;

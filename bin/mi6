@@ -4,8 +4,8 @@ use App::Mi6;
 
 my $app = App::Mi6.new;
 
-multi MAIN("new", $module) {
-    $app.cmd("new", $module);
+multi MAIN("new", $module, $license-name = 'GPLv3') {
+    $app.cmd("new", $module, $license-name);
 }
 multi MAIN("build") {
     $app.cmd("build");
