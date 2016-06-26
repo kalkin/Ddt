@@ -15,7 +15,7 @@ ok !$r.success;
 my $tempdir = tempdir;
 {
     temp $*CWD = $tempdir.IO;
-    $r = mi6 "new", "Foo::Bar";
+    $r = mi6 "new", "Foo::Bar", 'Apache2';
     ok $r.success;
     ok "Foo-Bar".IO.d;
     chdir "Foo-Bar";

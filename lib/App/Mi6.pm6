@@ -3,6 +3,7 @@ use App::Mi6::Template;
 use App::Mi6::JSON;
 use File::Find;
 use Shell::Command;
+use License::Software;
 
 unit class App::Mi6;
 
@@ -20,7 +21,7 @@ my $to-file = -> $module {
     'lib/' ~ $module.subst('::', '/', :g) ~ '.pm6';
 };
 
-multi method cmd('new', $module is copy) {
+multi method cmd('new', $module is copy, $license-name) {
     $module ~~ s:g/ '-' /::/;
     my $main-dir = $module;
     $main-dir ~~ s:g/ '::' /-/;
@@ -30,24 +31,37 @@ multi method cmd('new', $module is copy) {
     my $module-file = $to-file($module);
     my $module-dir = $module-file.IO.dirname.Str;
     mkpath($_) for $module-dir, "t", "bin";
-    my %content = App::Mi6::Template::template(:$module, :$!author, :$!email, :$!year);
+    my $license = License::Software::get($license-name).new("$!author <$!email>" );
+    my %content = App::Mi6::Template::template(:$module, :$license);
     my %map = <<
         $module-file module
         t/00-meta.t  test-meta
         t/01-basic.t test
-        LICENSE      license
         .gitignore   gitignore
         .travis.yml  travis
     >>;
     for %map.kv -> $f, $c {
         spurt($f, %content{$c});
     }
-    self.cmd("build");
+    for $license.files().kv -> $f, $text {
+        spurt($f, $text);
+    }
+    self.cmd("build", $license);
     my $devnull = open $*SPEC.devnull, :w;
     run "git", "init", ".", :out($devnull);
     $devnull.close;
     run "git", "add", ".";
     note "Successfully created $main-dir";
+}
+
+multi method cmd('build', $license) {
+    my ($module, $module-file) = guess-main-module();
+    if migrate-travis-yml() {
+        note "==> migrated .travis.yml for latest panda change";
+    }
+    regenerate-readme($module-file);
+    self.regenerate-meta-info($module, $module-file, $license);
+    build();
 }
 
 multi method cmd('build') {
@@ -131,7 +145,7 @@ sub regenerate-readme($module-file) {
     spurt "README.md", $header ~ $markdown;
 }
 
-method regenerate-meta-info($module, $module-file) {
+method regenerate-meta-info($module, $module-file, License::Software::Abstract $license?) {
     my $meta-file = <META6.json META.info>.grep({.IO ~~ :f & :!l})[0];
     my $already = $meta-file.defined ?? App::Mi6::JSON.decode($meta-file.IO.slurp) !! {};
 
@@ -160,6 +174,9 @@ method regenerate-meta-info($module, $module-file) {
         version       => $already<version> || "*",
         resources     => $already<resources> || [],
     ;
+    if $license {
+        %new-meta<license> = $license.url;
+    }
     ($meta-file || "META6.json").IO.spurt: App::Mi6::JSON.encode(%new-meta) ~ "\n";
 }
 
