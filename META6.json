@@ -8,7 +8,7 @@
     "JSON::Pretty",
     "Pod::To::Markdown",
     "Shell::Command",
-    "Legal::Licenses:ver<0.1>"
+    "Legal::Licenses"
   ],
   "description" : "minimal authoring tool for Perl6",
   "name" : "App::Mi6",
