@@ -19,7 +19,7 @@
     "App::Mi6::Template" : "lib/App/Mi6/Template.pm6"
   },
   "resources" : [ ],
-  "source-url" : "git://github.com/skaji/mi6.git",
+  "source-url" : "https://git.xsrc.de/perl6/mi6.git",
   "test-depends" : [
     "File::Temp"
   ],
