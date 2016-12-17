@@ -4,6 +4,7 @@ use App::Mi6::JSON;
 use File::Find;
 use Shell::Command;
 use Legal::Licenses;
+use Legal::License::Software;
 
 unit class App::Mi6;
 
@@ -46,12 +47,22 @@ multi method cmd('new', $module is copy, $license-name) {
     for $license.files().kv -> $f, $text {
         spurt($f, $text);
     }
-    self.cmd("build");
+    self.cmd("build", $license);
     my $devnull = open $*SPEC.devnull, :w;
     run "git", "init", ".", :out($devnull);
     $devnull.close;
     run "git", "add", ".";
     note "Successfully created $main-dir";
+}
+
+multi method cmd('build', $license) {
+    my ($module, $module-file) = guess-main-module();
+    if migrate-travis-yml() {
+        note "==> migrated .travis.yml for latest panda change";
+    }
+    regenerate-readme($module-file);
+    self.regenerate-meta-info($module, $module-file, $license);
+    build();
 }
 
 multi method cmd('build') {
@@ -135,7 +146,7 @@ sub regenerate-readme($module-file) {
     spurt "README.md", $header ~ $markdown;
 }
 
-method regenerate-meta-info($module, $module-file) {
+method regenerate-meta-info($module, $module-file, Legal::License::Software $license?) {
     my $meta-file = <META6.json META.info>.grep({.IO ~~ :f & :!l})[0];
     my $already = $meta-file.defined ?? App::Mi6::JSON.decode($meta-file.IO.slurp) !! {};
 
@@ -164,6 +175,9 @@ method regenerate-meta-info($module, $module-file) {
         version       => $already<version> || "*",
         resources     => $already<resources> || [],
     ;
+    if $license {
+        %new-meta<license> = $license.url;
+    }
     ($meta-file || "META6.json").IO.spurt: App::Mi6::JSON.encode(%new-meta) ~ "\n";
 }
 
