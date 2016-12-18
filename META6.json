@@ -22,7 +22,8 @@
   "resources" : [ ],
   "source-url" : "https://git.xsrc.de/perl6/mi6.git",
   "test-depends" : [
-    "File::Temp"
+    "File::Temp",
+    "Test::META"
   ],
   "version" : "*"
 }
