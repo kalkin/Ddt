@@ -1,11 +1,11 @@
 use v6;
-use App::Mi6::Template;
+use App::Mi6::Template:auth<kalkin>;
 use App::Mi6::JSON;
 use File::Find;
 use Shell::Command;
 use License::Software;
 
-unit class App::Mi6;
+unit class App::Mi6:auth<kalkin>;
 
 has $!author = qx{git config --global user.name}.chomp;
 has $!email  = qx{git config --global user.email}.chomp;
