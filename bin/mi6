@@ -4,38 +4,30 @@ use App::Mi6;
 
 my $app = App::Mi6.new;
 
-multi MAIN("new", $module, $license-name = 'GPLv3') {
+
+#| Create new module
+multi MAIN("new", 
+            $module, #= Module::To::Create
+            $license-name = 'GPLv3' #= License name
+        ) {
     $app.cmd("new", $module, $license-name);
 }
+
+#| Build the module in current directory
 multi MAIN("build") {
     $app.cmd("build");
 }
-multi MAIN("test", *@file, Bool :v(:$verbose), Int :j(:$jobs)) {
+
+#| Build and test module
+multi MAIN("test", 
+    *@file, #= Test files to execute
+    Bool :v(:$verbose), #= Verbose mode
+    UInt :j(:$jobs) #= Amount of jobs to run in paralel
+){
     $app.cmd("test", @file, :$verbose, :$jobs);
 }
+
+#| Make release
 multi MAIN("release") {
     $app.cmd("release");
 }
-multi MAIN("help") { usage }
-multi MAIN(:h(:$help)!) { usage}
-multi MAIN(|) { usage; exit 1; }
-sub usage() {
-    require Pod::To::Text;
-    ::("Pod::To::Text").render($=pod).say;
-}
-
-=begin pod
-
-=head1 USAGE
-
-  > mi6 new Foo::Bar # create Foo-Bar distribution
-  > mi6 build        # build the distribution, and re-generate README.md/META6.json
-  > mi6 test         # run tests
-  > mi6 release      # show release steps
-
-  Examples:
-  > mi6 --verbose test    # run tests with verbose mode (alias: -v)
-  > mi6 --jobs=N  test    # run N test jobs in parallel (alias: -j)
-  > mi6 test t/02-test.t  # run specific test
-
-=end pod
