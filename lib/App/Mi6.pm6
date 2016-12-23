@@ -3,8 +3,7 @@ use App::Mi6::Template:auth<kalkin>;
 use App::Mi6::JSON;
 use File::Find;
 use Shell::Command;
-use Legal::Licenses;
-use Legal::License::Software;
+use License::Software;
 
 unit class App::Mi6:auth<kalkin>;
 
@@ -32,7 +31,7 @@ multi method cmd('new', $module is copy, $license-name) {
     my $module-file = $to-file($module);
     my $module-dir = $module-file.IO.dirname.Str;
     mkpath($_) for $module-dir, "t", "bin";
-    my $license = Legal::Licenses::from-string($license-name).new("$!author <$!email>" );
+    my $license = License::Software::get($license-name).new("$!author <$!email>" );
     my %content = App::Mi6::Template::template(:$module, :$license);
     my %map = <<
         $module-file module
@@ -146,7 +145,7 @@ sub regenerate-readme($module-file) {
     spurt "README.md", $header ~ $markdown;
 }
 
-method regenerate-meta-info($module, $module-file, Legal::License::Software $license?) {
+method regenerate-meta-info($module, $module-file, License::Software::Abstract $license?) {
     my $meta-file = <META6.json META.info>.grep({.IO ~~ :f & :!l})[0];
     my $already = $meta-file.defined ?? App::Mi6::JSON.decode($meta-file.IO.slurp) !! {};
 

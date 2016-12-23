@@ -1,5 +1,5 @@
 {
-  "author" : "kalkin",
+  "auth" : "kalkin",
   "authors" : [
     "Shoichi Kaji"
   ],
@@ -9,7 +9,7 @@
     "JSON::Pretty",
     "Pod::To::Markdown",
     "Shell::Command",
-    "Legal::Licenses"
+    "License::Software"
   ],
   "description" : "minimal authoring tool for Perl6",
   "name" : "App::Mi6",
