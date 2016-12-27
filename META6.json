@@ -25,5 +25,5 @@
     "File::Temp",
     "Test::META"
   ],
-  "version" : "*"
+  "version" : "0.2.3"
 }
