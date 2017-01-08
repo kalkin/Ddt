@@ -6,11 +6,10 @@ use Shell::Command;
 use License::Software;
 use JSON::Pretty;
 
-unit class App::Mi6:auth<kalkin>;
+unit class App::Mi6;
 
-has $!author = qx{git config --global user.name}.chomp;
-has $!email  = qx{git config --global user.email}.chomp;
-has $!year   = Date.today.year;
+sub author { qx{git config --global user.name}.chomp }
+sub email { qx{git config --global user.email}.chomp }
 
 my $normalize-path = -> $path {
     $*DISTRO.is-win ?? $path.subst('\\', '/', :g) !! $path;
@@ -22,20 +21,32 @@ my $to-file = -> $module {
     'lib/' ~ $module.subst('::', '/', :g) ~ '.pm6';
 };
 
-multi method cmd('new', $module is copy, $license-name) {
+has $.module;
+has $.module-file;
+
+multi method new {
+    my ($module, $module-file) = guess-main-module();
+    self.bless(:$module, :$module-file);
+}
+
+multi method new($module is copy) {
     $module ~~ s:g/ '-' /::/;
-    my $main-dir = $module;
+    my $module-file = $to-file($module);
+    self.bless(:$module, :$module-file);
+}
+
+multi method init($license-name) {
+    my $main-dir = $.module;
     $main-dir ~~ s:g/ '::' /-/;
     die "Already exists $main-dir" if $main-dir.IO ~~ :d;
     mkpath($main-dir);
     chdir($main-dir); # XXX temp $*CWD
-    my $module-file = $to-file($module);
-    my $module-dir = $module-file.IO.dirname.Str;
+    my $module-dir = $.module-file.IO.dirname.Str;
     mkpath($_) for $module-dir, "t", "bin";
-    my $license = License::Software::get($license-name).new("$!author <$!email>" );
-    my %content = App::Mi6::Template::template(:$module, :$license);
+    my $license = License::Software::get($license-name).new("{author()} {email()}" );
+    my %content = App::Mi6::Template::template(:$.module, :$license);
     my %map = <<
-        $module-file module
+        $.module-file module
         t/00-meta.t  test-meta
         t/01-basic.t test
         .gitignore   gitignore
@@ -48,11 +59,15 @@ multi method cmd('new', $module is copy, $license-name) {
         spurt($f, $text);
     }
     self.cmd("build", $license);
+    init-vcs-repo;
+    note "Successfully created $main-dir";
+}
+
+sub init-vcs-repo {
     my $devnull = open $*SPEC.devnull, :w;
     run "git", "init", ".", :out($devnull);
     $devnull.close;
     run "git", "add", ".";
-    note "Successfully created $main-dir";
 }
 
 multi method cmd('build', $license) {
@@ -66,18 +81,16 @@ multi method cmd('build', $license) {
 }
 
 multi method cmd('build') {
-    my ($module, $module-file) = guess-main-module();
     if migrate-travis-yml() {
         note "==> migrated .travis.yml for latest panda change";
     }
-    regenerate-readme($module-file);
-    self.regenerate-meta-info($module, $module-file);
+    regenerate-readme($.module-file);
+    self.regenerate-meta-info($.module, $.module-file);
     build();
 }
 
 multi method cmd('release') {
     self.cmd('build');
-    my ($module, $module-file) = guess-main-module();
     my ($user, $repo) = guess-user-and-repo();
     die "Cannot find user and repository settting" unless $repo;
     my $meta-file = <META6.json META.info>.grep({.IO ~~ :f & :!l})[0];
@@ -90,7 +103,7 @@ multi method cmd('release') {
       3. And raise a pull request!
 
       Once your pull request is merged, we can install your module by:
-      \$ panda install $module
+      \$ panda install $.module
     EOF
 }
 
@@ -124,14 +137,19 @@ sub regenerate-readme($module-file) {
     spurt "README.md", $header ~ $markdown;
 }
 
-method regenerate-meta-info($module, $module-file, License::Software::Abstract $license?) {
+multi method regenerate-meta-info(License::Software::Abstract $license) {
+    my ($module, $module-file) = guess-main-module();
+    callwith $module, $module-file, $license;
+}
+
+multi method regenerate-meta-info($module, $module-file, License::Software::Abstract $license?) {
     my $meta-file = <META.info>.IO ~~ :f & :!l ?? <META.info> !! <META6.json> ;
     my $meta = META6.new: file => $meta-file;
 
     $meta.perl-version = $*PERL.version unless $meta.perl-version.defined;
     $meta.name = $module;
-    if $meta.authors ~~ Empty || $!author ∉ $meta.authors {
-        $meta.authors.push: $!author
+    if $meta.authors ~~ Empty || author() ∉ $meta.authors {
+        $meta.authors.push: author()
     }
     if $meta.test-depends ~~ Empty || "Test::META" ∉ $meta.test-depends {
         $meta.test-depends.push: "Test::META"

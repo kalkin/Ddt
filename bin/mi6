@@ -2,7 +2,6 @@
 use v6;
 use App::Mi6;
 
-my $app = App::Mi6.new;
 
 
 #| Create new module
@@ -10,15 +9,16 @@ multi MAIN("new",
             $module, #= Module::To::Create
             $license-name = 'GPLv3' #= License name
         ) {
-    $app.cmd("new", $module, $license-name);
+    my $app = App::Mi6.new: $module;
+    $app.init($license-name);
 }
 
 #| Build the module in current directory
 multi MAIN("build") {
-    $app.cmd("build");
+    App::Mi6.new.cmd("build");
 }
 
 #| Make release
 multi MAIN("release") {
-    $app.cmd("release");
+    App::Mi6.new.cmd("release");
 }
