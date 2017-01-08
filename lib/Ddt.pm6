@@ -1,12 +1,12 @@
 use v6;
-use App::Mi6::Template:auth<kalkin>;
+use Ddt::Template;
 use META6;
 use File::Find;
 use Shell::Command;
 use License::Software;
 use JSON::Pretty;
 
-unit class App::Mi6;
+unit class Ddt;
 
 sub author { qx{git config --global user.name}.chomp }
 sub email { qx{git config --global user.email}.chomp }
@@ -44,7 +44,7 @@ multi method init($license-name) {
     my $module-dir = $.module-file.IO.dirname.Str;
     mkpath($_) for $module-dir, "t", "bin";
     my $license = License::Software::get($license-name).new("{author()} {email()}" );
-    my %content = App::Mi6::Template::template(:$.module, :$license);
+    my %content = Ddt::Template::template(:$.module, :$license);
     my %map = <<
         $.module-file module
         t/00-meta.t  test-meta
@@ -288,7 +288,7 @@ sub guess-main-module() {
 
 =head1 NAME
 
-App::Mi6 - minimal authoring tool for Perl6
+Ddt - minimal authoring tool for Perl6
 
 =head1 SYNOPSIS
 
@@ -300,14 +300,14 @@ App::Mi6 - minimal authoring tool for Perl6
 =head1 INSTALLATION
 
   # with panda
-  > panda install App::Mi6
+  > panda install Ddt
 
   # or, with zef
-  > zef install App::Mi6
+  > zef install Ddt
 
 =head1 DESCRIPTION
 
-App::Mi6 is a minimal authoring tool for Perl6. Features are:
+Ddt is a minimal authoring tool for Perl6. Features are:
 
 =item Create minimal distribution skeleton for Perl6
 

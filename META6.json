@@ -1,5 +1,5 @@
 {
-  "name": "App::Mi6",
+  "name": "Ddt",
   "source-url": "https://git.xsrc.de/perl6/mi6.git",
   "support": {
     "source": null
@@ -18,8 +18,8 @@
     
   },
   "provides": {
-    "App::Mi6": "lib/App/Mi6.pm6",
-    "App::Mi6::Template": "lib/App/Mi6/Template.pm6"
+    "Ddt::Template": "lib/Ddt/Template.pm6",
+    "Ddt": "lib/Ddt.pm6"
   },
   "depends": [
     "File::Find",

@@ -1,6 +1,6 @@
 use v6;
 use Test;
-use App::Mi6:auth<kalkin>;
+use Ddt:auth;
 
 pass "ok";
 

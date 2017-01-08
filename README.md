@@ -3,7 +3,7 @@
 NAME
 ====
 
-App::Mi6 - minimal authoring tool for Perl6
+Ddt - minimal authoring tool for Perl6
 
 SYNOPSIS
 ========
@@ -17,15 +17,15 @@ INSTALLATION
 ============
 
     # with panda
-    > panda install App::Mi6
+    > panda install Ddt
 
     # or, with zef
-    > zef install App::Mi6
+    > zef install Ddt
 
 DESCRIPTION
 ===========
 
-App::Mi6 is a minimal authoring tool for Perl6. Features are:
+Ddt is a minimal authoring tool for Perl6. Features are:
 
   * Create minimal distribution skeleton for Perl6
 

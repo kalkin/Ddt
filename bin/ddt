@@ -1,24 +1,22 @@
 #!/usr/bin/env perl6
 use v6;
-use App::Mi6;
-
-
+use Ddt;
 
 #| Create new module
 multi MAIN("new", 
             $module, #= Module::To::Create
             $license-name = 'GPLv3' #= License name
         ) {
-    my $app = App::Mi6.new: $module;
+    my $app = Ddt.new: $module;
     $app.init($license-name);
 }
 
 #| Build the module in current directory
 multi MAIN("build") {
-    App::Mi6.new.cmd("build");
+    Ddt.new.cmd("build");
 }
 
 #| Make release
 multi MAIN("release") {
-    App::Mi6.new.cmd("release");
+    Ddt.new.cmd("release");
 }

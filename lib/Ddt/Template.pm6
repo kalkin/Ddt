@@ -1,4 +1,4 @@
-unit module App::Mi6::Template;
+unit module Ddt::Template;
 
 our sub template(:$module, :$license) {
     my %template =
