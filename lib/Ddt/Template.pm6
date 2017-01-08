@@ -1,6 +1,6 @@
 unit module Ddt::Template;
 
-our sub template(:$module, :$license) {
+our sub template($module, $license) {
     my %template =
 gitignore => qq:to/EOF/,
 /blib/

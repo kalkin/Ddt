@@ -35,40 +35,6 @@ multi method new($module is copy) {
     self.bless(:$module, :$module-file);
 }
 
-multi method init($license-name) {
-    my $main-dir = $.module;
-    $main-dir ~~ s:g/ '::' /-/;
-    die "Already exists $main-dir" if $main-dir.IO ~~ :d;
-    mkpath($main-dir);
-    chdir($main-dir); # XXX temp $*CWD
-    my $module-dir = $.module-file.IO.dirname.Str;
-    mkpath($_) for $module-dir, "t", "bin";
-    my $license = License::Software::get($license-name).new("{author()} {email()}" );
-    my %content = Ddt::Template::template(:$.module, :$license);
-    my %map = <<
-        $.module-file module
-        t/00-meta.t  test-meta
-        t/01-basic.t test
-        .gitignore   gitignore
-        .travis.yml  travis
-    >>;
-    for %map.kv -> $f, $c {
-        spurt($f, %content{$c});
-    }
-    for $license.files().kv -> $f, $text {
-        spurt($f, $text);
-    }
-    self.cmd("build", $license);
-    init-vcs-repo;
-    note "Successfully created $main-dir";
-}
-
-sub init-vcs-repo {
-    my $devnull = open $*SPEC.devnull, :w;
-    run "git", "init", ".", :out($devnull);
-    $devnull.close;
-    run "git", "add", ".";
-}
 
 multi method cmd('build', $license) {
     my ($module, $module-file) = guess-main-module();
