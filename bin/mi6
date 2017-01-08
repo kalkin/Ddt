@@ -19,15 +19,6 @@ multi MAIN("build") {
     $app.cmd("build");
 }
 
-#| Build and test module
-multi MAIN("test", 
-    *@file, #= Test files to execute
-    Bool :v(:$verbose), #= Verbose mode
-    UInt :j(:$jobs) #= Amount of jobs to run in paralel
-){
-    $app.cmd("test", @file, :$verbose, :$jobs);
-}
-
 #| Make release
 multi MAIN("release") {
     $app.cmd("release");

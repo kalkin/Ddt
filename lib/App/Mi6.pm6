@@ -74,12 +74,6 @@ multi method cmd('build') {
     build();
 }
 
-multi method cmd('test', @file, Bool :$verbose, Int :$jobs) {
-    self.cmd('build');
-    my $exitcode = test(@file, :$verbose, :$jobs);
-    exit $exitcode;
-}
-
 multi method cmd('release') {
     self.cmd('build');
     my ($module, $module-file) = guess-main-module();
@@ -110,22 +104,6 @@ sub build() {
     require Panda::Builder;
     note '==> Execute Panda::Builder.build(~$*CWD)';
     ::("Panda::Builder").build(~$*CWD);
-}
-
-sub test(@file, Bool :$verbose, Int :$jobs) {
-    withp6lib {
-        my @option = "-r";
-        @option.push("-v") if $verbose;
-        @option.push("-j", $jobs) if $jobs;
-        if @file.elems == 0 {
-            @file = <t xt>.grep({.IO.d});
-        }
-        my @command = "prove", "-e", $*EXECUTABLE, |@option, |@file;
-        note "==> Set PERL6LIB=%*ENV<PERL6LIB>";
-        note "==> @command[]";
-        my $proc = run |@command;
-        $proc.exitcode;
-    };
 }
 
 sub regenerate-readme($module-file) {
@@ -310,7 +288,6 @@ App::Mi6 - minimal authoring tool for Perl6
   > mi6 new Foo::Bar # create Foo-Bar distribution
   > cd Foo-Bar
   > mi6 build        # build the distribution and re-generate README.md/META6.json
-  > mi6 test         # run tests
   > mi6 release      # release!
 
 =head1 INSTALLATION
@@ -328,8 +305,6 @@ App::Mi6 is a minimal authoring tool for Perl6. Features are:
 =item Create minimal distribution skeleton for Perl6
 
 =item Generate README.md from lib/Main/Module.pm6's pod
-
-=item Run tests by C<mi6 test>
 
 =head1 FAQ
 
