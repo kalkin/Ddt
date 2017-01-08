@@ -1,9 +1,10 @@
 use v6;
 use App::Mi6::Template:auth<kalkin>;
-use App::Mi6::JSON;
+use META6;
 use File::Find;
 use Shell::Command;
 use License::Software;
+use JSON::Pretty;
 
 unit class App::Mi6:auth<kalkin>;
 
@@ -124,38 +125,26 @@ sub regenerate-readme($module-file) {
 }
 
 method regenerate-meta-info($module, $module-file, License::Software::Abstract $license?) {
-    my $meta-file = <META6.json META.info>.grep({.IO ~~ :f & :!l})[0];
-    my $already = $meta-file.defined ?? App::Mi6::JSON.decode($meta-file.IO.slurp) !! {};
+    my $meta-file = <META.info>.IO ~~ :f & :!l ?? <META.info> !! <META6.json> ;
+    my $meta = META6.new: file => $meta-file;
 
-    my $authors = do if $already<authors> {
-        $already<authors>;
-    } elsif $already<author> {
-        [$already<author>];
-    } else {
-        [ $!author ];
-    };
-
-    my $perl = $already<perl> || "6.c";
-    $perl = "6.c" if $perl eq "v6";
-    $perl ~~ s/^v//;
-
-    my %new-meta =
-        name          => $module,
-        perl          => $perl,
-        authors       => $authors,
-        depends       => $already<depends> || [],
-        test-depends  => $already<test-depends> || ["Test::META"],
-        build-depends => $already<build-depends> || [],
-        description   => find-description($module-file) || $already<description> || "",
-        provides      => find-provides(),
-        source-url    => $already<source-url> || find-source-url(),
-        version       => $already<version> || "*",
-        resources     => $already<resources> || [],
-    ;
-    if $license {
-        %new-meta<license> = $license.url;
+    $meta.perl-version = $*PERL.version unless $meta.perl-version.defined;
+    $meta.name = $module;
+    if $meta.authors ~~ Empty || $!author ∉ $meta.authors {
+        $meta.authors.push: $!author
     }
-    ($meta-file || "META6.json").IO.spurt: App::Mi6::JSON.encode(%new-meta) ~ "\n";
+    if $meta.test-depends ~~ Empty || "Test::META" ∉ $meta.test-depends {
+        $meta.test-depends.push: "Test::META"
+    }
+    $meta.description = find-description($module-file) || $meta.description;
+    $meta.provides = find-provides();
+    $meta.source-url = find-source-url() unless $meta.source-url.defined;
+    $meta.version = "*" unless $meta.source-url.defined;
+    if $license.defined and !$meta.license.defined {
+        $meta.license = $license.url
+    }
+
+    $meta-file.IO.spurt: $meta.to-json: :skip-null;
 }
 
 sub find-description($module-file) {
