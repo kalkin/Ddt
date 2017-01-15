@@ -5,6 +5,8 @@ use Ddt::Template;
 unit class Ddt::Distribution;
 
 has META6 $.META6;
+has Str $.main-comp-unit;
+has Bool $.relaxed-name = '-' ∈ $!META6.name.comb;
 has IO::Path $.main-dir where *.d;
 has IO::Path $.meta-file where *.f;
 has IO::Path $.bin-dir   = $!main-dir.child(<bin>);
@@ -13,9 +15,11 @@ has IO::Path $.lib-dir   = $!main-dir.child(<lib>);
 has IO::Path $.test-dir  = $!main-dir.child(<t>);
 
 multi method new(IO::Path $meta-file) {
-    self.bless: META6 => META6.new(file => $meta-file),
+    my META6 $meta = META6.new(file => $meta-file);
+    self.bless: META6 => $meta,
                 meta-file => $meta-file,
-                main-dir => $meta-file.parent;
+                main-dir => $meta-file.parent,
+                main-comp-unit => $meta.name.subst('-', '::', :g)
 }
 multi method new(Str $meta-file) { self.new($meta-file.IO) }
 
@@ -45,7 +49,7 @@ method generate-META6 {
     if $meta.test-depends ~~ Empty || "Test::META" ∉ $meta.test-depends {
         $meta.test-depends.push: "Test::META"
     }
-    $meta.description = find-description(self!name-to-file: $meta.name) || $meta.description;
+    $meta.description = find-description(self!name-to-file: $.main-comp-unit) || $meta.description;
     $meta.provides = self.find-provides;
     $meta.source-url = find-source-url() unless $meta.source-url.defined;
     $meta.version = "*" unless $meta.source-url.defined;
@@ -55,7 +59,7 @@ method generate-META6 {
 }
 
 method generate-README {
-    my $module-file = self!name-to-file: $.META6.name;
+    my $module-file = self!name-to-file: $.main-comp-unit;
     my @cmd = $*EXECUTABLE, "--doc=Markdown", "-I$.lib-dir", $module-file;
     my $p = run(|@cmd, :out);
     die "Failed @cmd[]" if $p.exitcode != 0;
@@ -77,12 +81,11 @@ method !make-content {
     my $module = $.META6.name.subst: '-', '::', :g;
     my IO::Path $module-file = $.lib-dir;
 
-    for $.META6.name.split(<::>) { $module-file = $module-file.child: $_ };
-    say IO::Path.new: $module-file.Str ~ ".pm6";
+    for $.main-comp-unit.split(<::>) { $module-file = $module-file.child: $_ };
     $module-file = IO::Path.new: $module-file.Str ~ ".pm6";
     $module-file.parent.mkdir;
 
-    my %content = Ddt::Template::template($module, $license);
+    my %content = Ddt::Template::template($module, $license, $.relaxed-name);
     my %map = <<
         $module-file module
         $.test-dir.child(<00-meta.t>)  test-meta
@@ -111,7 +114,7 @@ method !license of License::Software::Abstract {
 
 method find-provides {
     find dir => $!lib-dir, name => /\.pm6?$/
-        ==> map { self!to-module($_) => $_.Str } ==> sort;
+        ==> map { self!to-module($_) => $_.relative($.main-dir) } ==> sort;
 }
 
 sub author { qx{git config --global user.name}.chomp }

@@ -28,7 +28,6 @@ multi MAIN("new",
 
     my $meta-file = $main-dir.IO.child(<META6.json>);
     $meta-file.spurt: $meta.to-json(:skip-null);
-    say $meta-file;
     my $ddt = Ddt::Distribution.new: $meta-file;
     $ddt.generate-all: :force;
     note "Successfully created $main-dir";

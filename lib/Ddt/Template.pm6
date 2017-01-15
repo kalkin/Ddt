@@ -1,6 +1,6 @@
 unit module Ddt::Template;
 
-our sub template($module, $license) {
+our sub template($module, $license, $relaxed-name) {
     my %template =
 gitignore => qq:to/EOF/,
 /blib/
@@ -62,7 +62,7 @@ use Test::META;
 plan 1;
 
 # That's it
-meta-ok();
+meta-ok relaxed-name => $relaxed-name;
 END_OF_META_TEST
 
 module => qq:to/EOD_OF_MODULE/,
