@@ -38,6 +38,10 @@ multi MAIN("build") {
     Ddt.new.cmd("build");
 }
 
+multi MAIN("test") {
+    run "zef", "test", "."
+}
+
 #| Make release
 multi MAIN("release") {
     Ddt.new.cmd("release");

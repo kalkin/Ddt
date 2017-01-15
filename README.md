@@ -8,10 +8,10 @@ Ddt - minimal authoring tool for Perl6
 SYNOPSIS
 ========
 
-    > mi6 new Foo::Bar # create Foo-Bar distribution
+    > ddt new Foo::Bar # create Foo-Bar distribution
     > cd Foo-Bar
-    > mi6 build        # build the distribution and re-generate README.md/META6.json
-    > mi6 release      # release!
+    > ddt build        # build the distribution and re-generate README.md & META6.json
+    > ddt test         # Run tests
 
 INSTALLATION
 ============

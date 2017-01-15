@@ -27,7 +27,8 @@
     "JSON::Pretty",
     "Pod::To::Markdown",
     "Shell::Command",
-    "License::Software"
+    "License::Software",
+    "Zef::CLI"
   ],
   "tags": [
     
