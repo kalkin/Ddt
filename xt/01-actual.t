@@ -1,44 +1,61 @@
 use v6;
 use Test;
-use lib "xt";
-use Util;
 use File::Temp;
 use JSON::Pretty;
+my class Result {
+    has $.out;
+    has $.err;
+    has $.exit;
+    method success() { $.exit == 0 }
+}
+
+
+my $base = $*SPEC.catdir($?FILE.IO.dirname, "..");
+sub ddt(*@arg) is export {
+    my ($o, $out) = tempfile;
+    my ($e, $err) = tempfile;
+    my $s = run $*EXECUTABLE, "-I$base/lib", "$base/bin/ddt", |@arg, :out($out), :err($err);
+    .close for $out, $err;
+    my $r = Result.new(:out($o.IO.slurp), :err($e.IO.slurp), :exit($s.exitcode));
+    unlink($_) for $o, $e;
+    $r;
+}
 
 my $r;
-$r = mi6 "new";
+$r = ddt "new";
 ok !$r.success;
 
-$r = mi6 "unknown";
+$r = ddt "unknown";
 ok !$r.success;
 
 my $tempdir = tempdir;
 {
     temp $*CWD = $tempdir.IO;
-    $r = mi6 "new", "Foo::Bar", 'Apache2';
+    $r = ddt '--license-name=Apache2', "new", "Foo::Bar";
+    say $r;
     ok $r.success;
     ok "Foo-Bar".IO.d;
     chdir "Foo-Bar";
     ok $_.IO.e for <.git  .gitignore  .travis.yml  LICENSE  META6.json  README.md  bin  lib  t>;
     ok !"xt".IO.d;
     ok "lib/Foo/Bar.pm6".IO.e;
-    $r = mi6 "test";
+    $r = ddt "test";
     ok $r.success;
     like $r.out, rx/All \s+ tests \s+ successful/;
 
-    mkdir "xt";
-    "xt/01-fail.t".IO.spurt: q:to/EOF/;
+    mkdir "t";
+    "t/01-fail.t".IO.spurt: q:to/EOF/;
     use Test;
     plan 1;
     ok False;
     EOF
-    $r = mi6 "test";
+    $r = ddt "test";
     ok !$r.success;
     like $r.out, rx/Failed/;
 }
 {
     temp $*CWD = $tempdir.IO;
-    $r = mi6 "new", "Hello";
+    $r = ddt "new", "Hello";
     chdir "Hello";
     my $meta = from-json( "META6.json".IO.slurp );
     is $meta<description>, "blah blah blah";
@@ -56,7 +73,7 @@ my $tempdir = tempdir;
 
     =end pod
     EOF
-    $r = mi6 "build";
+    $r = ddt "build";
     $meta = from-json( "META6.json".IO.slurp );
     is $meta<description>, "This is hello module.";
 }
