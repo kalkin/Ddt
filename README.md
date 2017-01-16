@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/kalkin/ddt.svg?branch=master)](https://travis-ci.org/kalkin/ddt)
+[![Build Status](https://travis-ci.org/kalkin/Ddt.svg?branch=master)](https://travis-ci.org/kalkin/Ddt)
 
 NAME
 ====
