@@ -69,7 +69,7 @@ multi method cmd('release') {
       3. And raise a pull request!
 
       Once your pull request is merged, we can install your module by:
-      \$ panda install $.module
+      \$ zef install $.module
     EOF
 }
 
@@ -259,7 +259,7 @@ our sub meta-to-json(META6 $meta --> Str:D) {
 
 =head1 NAME
 
-Ddt - minimal authoring tool for Perl6
+Ddt - Distribution Development Tool a replacement for mi6
 
 =head1 SYNOPSIS
 
@@ -270,19 +270,41 @@ Ddt - minimal authoring tool for Perl6
 
 =head1 INSTALLATION
 
-  # with panda
-  > panda install Ddt
-
-  # or, with zef
+  # with zef
   > zef install Ddt
 
 =head1 DESCRIPTION
 
-Ddt is a minimal authoring tool for Perl6. Features are:
+Ddt is a an authoring tool for Perl6. 
 
-=item Create minimal distribution skeleton for Perl6
+=head2 Features
+
+=item Create a distribution skeleton for Perl6
 
 =item Generate README.md from lib/Main/Module.pm6's pod
+
+=item Generate a META6.json
+
+=item Generate a META test with 
+
+=item Support for different licenses
+
+
+=head2 Differences to Mi6
+
+=item Support for different licenses via C<License::Software>
+
+=item META6 is generated using C<META6>
+
+=item Meta test
+
+=item Use zef for tests
+
+=item Extended .gitignore
+
+=item Support for different licenses
+
+=item Support for Distributions with a hyphen in the namel
 
 =head1 FAQ
 
@@ -294,7 +316,7 @@ Ddt is a minimal authoring tool for Perl6. Features are:
 
   TODO
 
-=item Where is the spec of META6.json or META.info?
+=item Where is the spec of META6.json?
 
   Maybe https://github.com/perl6/ecosystem/blob/master/spec.pod or http://design.perl6.org/S22.html
 
@@ -310,11 +332,14 @@ L<<https://github.com/rjbs/Dist-Zilla>>
 
 =head1 AUTHOR
 
-Shoichi Kaji <skaji@cpan.org>
+=item Bahtiar `kalkin-` Gadimov <bahtiar@gadimov.de>
+
+=item Shoichi Kaji <skaji@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2015 Shoichi Kaji
+=item Copyright © 2015 Shoichi Kaji
+=item Copyright © 2016-2017 Bahtiar `kalkin-` Gadimov
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 

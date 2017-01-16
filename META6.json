@@ -24,7 +24,7 @@
     "META6",
     "Test::META"
   ],
-  "description" : "minimal authoring tool for Perl6",
+  "description" : "Distribution Development Tool a replacement for mi6",
   "version" : "0.3.2",
   "meta6" : "0",
   "authors" : [
