@@ -81,9 +81,7 @@ sub withp6lib(&code) {
 
 sub build() {
     return unless "Build.pm".IO.e;
-    require Panda::Builder;
-    note '==> Execute Panda::Builder.build(~$*CWD)';
-    ::("Panda::Builder").build(~$*CWD);
+    run "zef", "build", ".";
 }
 
 sub regenerate-readme($module-file) {
