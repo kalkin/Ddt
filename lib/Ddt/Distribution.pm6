@@ -55,7 +55,7 @@ method generate-META6 {
     $meta.version = "*" unless $meta.source-url.defined;
     $meta.license = self!license.url unless !$meta.license.defined;
 
-    $.meta-file.IO.spurt: $meta.to-json: :skip-null;
+    $.meta-file.IO.spurt: Ddt::meta-to-json($meta);
 }
 
 method generate-README {

@@ -128,7 +128,7 @@ multi method regenerate-meta-info($module, $module-file, License::Software::Abst
         $meta.license = $license.url
     }
 
-    $meta-file.IO.spurt: $meta.to-json: :skip-null;
+    $meta-file.IO.spurt: meta-to-json($meta);
 }
 
 sub find-description($module-file) {
@@ -248,6 +248,11 @@ sub guess-main-module() {
             return ($to-module($f), $f);
         }
     }
+}
+
+our sub meta-to-json(META6 $meta --> Str:D) {
+    my %h = from-json($meta.to-json: :skip-null).pairs.grep: *.value !~~ Empty;
+    to-json(%h);
 }
 
 =begin pod

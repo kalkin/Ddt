@@ -1,28 +1,17 @@
 {
-  "name": "Ddt",
-  "source-url": "https://git.xsrc.de/perl6/mi6.git",
-  "support": {
-    "source": null
+  "name" : "Ddt",
+  "source-url" : "https://git.xsrc.de/perl6/mi6.git",
+  "support" : {
+    "source" : null
   },
-  "perl": "6.c",
-  "resources": [
-    
-  ],
-  "build-depends": [
-  ],
-  "excludes": {
-    
+  "perl" : "6.c",
+  "auth" : "kalkin",
+  "provides" : {
+    "Ddt::Template" : "lib/Ddt/Template.pm6",
+    "Ddt::Distribution" : "lib/Ddt/Distribution.pm6",
+    "Ddt" : "lib/Ddt.pm6"
   },
-  "auth": "kalkin",
-  "superseded-by": {
-    
-  },
-  "provides": {
-    "Ddt::Template": "lib/Ddt/Template.pm6",
-    "Ddt::Distribution": "lib/Ddt/Distribution.pm6",
-    "Ddt": "lib/Ddt.pm6"
-  },
-  "depends": [
+  "depends" : [
     "File::Find",
     "JSON::Pretty",
     "Pod::To::Markdown",
@@ -30,24 +19,15 @@
     "License::Software",
     "Zef::CLI"
   ],
-  "tags": [
-    
-  ],
-  "test-depends": [
+  "test-depends" : [
     "File::Temp",
     "META6",
     "Test::META"
   ],
-  "description": "minimal authoring tool for Perl6",
-  "emulates": {
-    
-  },
-  "version": "0.3.0",
-  "meta6": "0",
-  "supersedes": {
-    
-  },
-  "authors": [
+  "description" : "minimal authoring tool for Perl6",
+  "version" : "0.3.2",
+  "meta6" : "0",
+  "authors" : [
     "Shoichi Kaji",
     "Bahtiar `kalkin-` Gadimov"
   ]
