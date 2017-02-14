@@ -1,12 +1,12 @@
 #!/usr/bin/env perl6
 use v6;
-use Ddt;
 use Ddt::Distribution;
 use META6;
 use License::Software;
 
 sub author { qx{git config --global user.name}.chomp }
 sub email { qx{git config --global user.email}.chomp }
+sub TOPDIR { qx{git rev-parse --show-toplevel}.chomp.IO }
 
 #| Create new module
 multi MAIN("new",
@@ -35,7 +35,11 @@ multi MAIN("new",
 
 #| Build the module in current directory
 multi MAIN("build") {
-    Ddt.new.cmd("build");
+    my $ddt = Ddt::Distribution.new: TOPDIR;
+    $ddt.generate-README;
+    $ddt.generate-META6;
+    return unless "Build.pm".IO.e;
+    run "zef", "build", ".";
 }
 
 multi MAIN("test") {
@@ -44,6 +48,36 @@ multi MAIN("test") {
 
 #| Make release
 multi MAIN("release") {
-    Ddt.new.cmd("release");
+    my $ddt = Ddt::Distribution.new: TOPDIR;
+    my ($user, $repo) = guess-user-and-repo($ddt.META6<source-url>);
+    my Str:D $meta-file = $ddt.meta-file.basename;
+    my Str:D $module = $ddt.name;
+    die "Cannot find user and repository settting" unless $repo;
+    say  qq:to/EOF/;
+    Are you ready to release your module? Congrats!
+    For this, follow these steps:
+
+    1. Fork https://github.com/perl6/ecosystem repository.
+    2. Add https://raw.githubusercontent.com/$user/$repo/master/$meta-file to META.list.
+    3. And raise a pull request!
+
+
+    Once your pull request is merged, we can install your module by:
+
+    \$ zef install $module
+    EOF
+}
+
+sub guess-user-and-repo(Str:D $url) {
+    return if $url eq "";
+    if $url ~~ m{ (git|https?) '://'
+        [<-[/]>+] '/'
+        $<user>=[<-[/]>+] '/'
+        $<repo>=[.+?] [\.git]?
+    $} {
+        return $/<user>, $/<repo>;
+    } else {
+        return;
+    }
 }
 
