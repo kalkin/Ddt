@@ -1,6 +1,37 @@
 use v6;
 
-unit package Ddt;
+unit module Ddt;
+
+sub to-name(Str:D $name, Str $dist-prefix?) of Str:D is export {
+    when  !$dist-prefix.defined {
+        if $name.starts-with: '::' {
+            die 'unit name starts with "::" but no $dist-prefix provided'
+        }
+        return $name
+    }
+    when $name.starts-with: $dist-prefix { return $name }
+    when $name.starts-with: '::'         { return $dist-prefix ~ $name }
+    default { return $dist-prefix ~ '::' ~ $name }
+}
+
+sub name-to-file(Str:D $name) of Str:D is export {
+    join("/",  gather for $name.split('::') -> $c {
+        take $c
+    }) ~ ".pm6"
+}
+
+sub author is export { qx{git config --global user.name}.chomp }
+sub email is export { qx{git config --global user.email}.chomp }
+sub TOPDIR of IO::Path:D is export {
+    my Proc:D $proc = Proc.new(:out, :err);
+    $proc.shell: 'git rev-parse --show-toplevel';
+    my $dir = $proc.out.slurp-rest;
+    unless $dir {
+        return fail "Not in a repository"
+    }
+    return $dir.chomp.IO
+}
+
 
 
 =begin pod
@@ -14,7 +45,7 @@ Ddt - Distribution Development Tool similar to mi6
   > ddt new Foo::Bar # create Foo-Bar distribution
   > cd Foo-Bar
   > ddt build        # build the distribution and re-generate README.md & META6.json
-  > ddt test         # Run tests 
+  > ddt test         # Run tests
 
 =head1 INSTALLATION
 
