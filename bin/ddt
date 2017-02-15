@@ -1,6 +1,8 @@
 #!/usr/bin/env perl6
 use v6;
+use Ddt;
 use Ddt::Distribution;
+use Ddt::Plugins::Unit-Generator;
 use META6;
 use Zef;
 use Zef::Config;
@@ -54,8 +56,34 @@ multi MAIN("build") {
     run "zef", "build", ".";
 }
 
-multi MAIN("test") {
-    run "zef", "test", "."
+#| Run distribution tests
+multi MAIN("test",
+            Str  :$state,       #= Control prove's persistent state
+            Bool :$timer,       #= Print elapsed time after each test
+            Bool :v(:$verbose), #= Print all test lines
+            Bool :c(:$color),   #= Colored test output (default when terminal)
+                 *@tests        #= Files or directories
+        ) {
+    if @tests ~~ Empty {
+        @tests.push: TOPDIR.child(<t>) if TOPDIR.child(<t>) ~~ :e & :d;
+        @tests.push: TOPDIR.child(<xt>) if TOPDIR.child(<xt>) ~~ :e & :d;
+    }
+    my Str @args = [];
+    @args.push: '--timer' if $timer.defined;
+    @args.push: '-c' if $color.defined || $*IN.t;
+    @args.push: '-v' if $verbose.defined;
+    @args.push: "--state=$state" if $state.defined;
+    run 'prove', @args, '--exec', 'perl6 -Ilib', @tests;
+}
+
+multi MAIN("g", Str:D $name is copy) {
+    my $ddt = Ddt::Distribution.new: TOPDIR;
+    my Str:D $prefix = $ddt.META6<provides>.keys.sort[0];
+    $name = to-name $name, $prefix;
+    my $path = TOPDIR.child(<lib>).child(name-to-file $name);
+    my $plugin = Ddt::Plugins::Unit-Generator.new: :$name;
+    spurt $path, $plugin.work(), :createonly;
+
 }
 
 #| Make release
