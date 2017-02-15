@@ -23,7 +23,7 @@
     "Test::META"
   ],
   "description" : "Distribution Development Tool similar to mi6",
-  "version" : "0.3.2",
+  "version" : "0.3.3",
   "meta6" : "0",
   "authors" : [
     "Shoichi Kaji",
