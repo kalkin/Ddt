@@ -10,6 +10,18 @@ use Zef::Client;
 use Zef::Identity;
 use License::Software;
 
+sub author { qx{git config --global user.name}.chomp }
+sub email { qx{git config --global user.email}.chomp }
+sub TOPDIR of IO::Path:D { 
+    my Proc:D $proc = Proc.new(:out, :err);
+    $proc.shell: 'git rev-parse --show-toplevel';
+    my $dir = $proc.out.slurp-rest;
+    unless $dir {
+        return fail "Not in a repository"
+    } 
+    return $dir.chomp.IO
+}
+
 #| Create new module
 multi MAIN("new",
             $module is copy, #= Module::To::Create
