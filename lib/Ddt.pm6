@@ -37,6 +37,24 @@ sub TOPDIR of IO::Path:D is export {
     return $dir.chomp.IO
 }
 
+class Result is export(:TEST) {
+    has $.out;
+    has $.err;
+    has $.exit;
+    method success() { $.exit == 0 }
+}
+
+sub ddt(*@arg) is export(:TEST) {
+    my $base = $*SPEC.catdir($?FILE.IO.dirname, "..");
+    my ($o, $out) = tempfile;
+    my ($e, $err) = tempfile;
+    my $s = run $*EXECUTABLE, "-I$base/lib", "$base/bin/ddt", |@arg, :out($out), :err($err);
+    .close for $out, $err;
+    my $r = Result.new(:out($o.IO.slurp), :err($e.IO.slurp), :exit($s.exitcode));
+    unlink($_) for $o, $e;
+    $r;
+}
+
 
 sub get-client {
     my $config = do {
