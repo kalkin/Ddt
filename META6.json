@@ -24,6 +24,7 @@
     "Zef::Identity"
   ],
   "test-depends" : [
+    "File::Temp",
     "Test::META"
   ],
   "description" : "Distribution Development Tool similar to mi6",
