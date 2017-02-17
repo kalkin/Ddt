@@ -52,6 +52,7 @@ multi MAIN("test",
             Bool :c(:$color),   #= Colored test output (default when terminal)
                  *@tests        #= Files or directories
         ) {
+    temp $*CWD = TOPDIR;
     if @tests ~~ Empty {
         @tests.push: TOPDIR.child(<t>) if TOPDIR.child(<t>) ~~ :e & :d;
         @tests.push: TOPDIR.child(<xt>) if TOPDIR.child(<xt>) ~~ :e & :d;
