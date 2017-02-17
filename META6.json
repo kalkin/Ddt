@@ -8,12 +8,14 @@
   "auth" : "kalkin",
   "provides" : {
     "Ddt::Template" : "lib/Ddt/Template.pm6",
+    "Ddt::CLI" : "lib/Ddt/CLI.pm6",
     "Ddt::Distribution" : "lib/Ddt/Distribution.pm6",
     "Ddt::Plugins::Unit-Generator" : "lib/Ddt/Plugins/Unit-Generator.pm6",
     "Ddt" : "lib/Ddt.pm6"
   },
   "depends" : [
     "File::Find",
+    "File::Temp",
     "JSON::Pretty",
     "License::Software",
     "META6",
@@ -21,6 +23,7 @@
     "Zef",
     "Zef::Client",
     "Zef::Config",
+    "Zef::Distribution",
     "Zef::Identity"
   ],
   "test-depends" : [
