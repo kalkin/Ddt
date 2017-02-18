@@ -10,6 +10,8 @@ gitignore => qq:to/EOF/,
 /resources/*.so
 /resources/*.dylib
 .precomp/
+# Prove saved state
+.prove
 # Vim swap files
 [._]*.s[a-w][a-z]
 [._]s[a-w][a-z]

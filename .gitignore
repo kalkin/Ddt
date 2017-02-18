@@ -1,4 +1,18 @@
 /blib/
+/src/*.o
+/src/Makefile
 /resources/*.so
 /resources/*.dylib
 .precomp/
+# Prove saved state
+.prove
+# Vim swap files
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+# Vim session
+Session.vim
+# temporary
+.netrwhist
+*~
+# Vim auto-generated tag files
+tags
