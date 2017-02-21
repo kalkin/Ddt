@@ -14,17 +14,16 @@
   "depends" : [
     "File::Find",
     "JSON::Pretty",
-    "Pod::To::Markdown",
-    "Shell::Command",
     "License::Software",
-    "Zef::CLI"
-  ],
-  "test-depends" : [
-    "File::Temp",
     "META6",
+    "Shell::Command",
     "Test::META"
   ],
-  "description" : "Distribution Development Tool a replacement for mi6",
+  "test-depends" : [
+    "Ddt:auth",
+    "Test::META"
+  ],
+  "description" : "Distribution Development Tool similar to mi6",
   "version" : "0.3.2",
   "meta6" : "0",
   "authors" : [

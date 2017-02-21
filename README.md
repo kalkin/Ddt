@@ -3,7 +3,7 @@
 NAME
 ====
 
-Ddt - Distribution Development Tool a replacement for mi6
+Ddt - Distribution Development Tool similar to mi6
 
 SYNOPSIS
 ========
@@ -22,7 +22,7 @@ INSTALLATION
 DESCRIPTION
 ===========
 
-Ddt is a an authoring tool for Perl6. 
+Ddt is an authoring and distribution development tool for Perl6.
 
 Features
 --------
@@ -33,7 +33,7 @@ Features
 
   * Generate a META6.json
 
-  * Generate a META test with 
+  * Generate a META test by default
 
   * Support for different licenses
 

@@ -259,7 +259,7 @@ our sub meta-to-json(META6 $meta --> Str:D) {
 
 =head1 NAME
 
-Ddt - Distribution Development Tool a replacement for mi6
+Ddt - Distribution Development Tool similar to mi6
 
 =head1 SYNOPSIS
 
@@ -275,7 +275,7 @@ Ddt - Distribution Development Tool a replacement for mi6
 
 =head1 DESCRIPTION
 
-Ddt is a an authoring tool for Perl6. 
+Ddt is an authoring and distribution development tool for Perl6.
 
 =head2 Features
 
@@ -285,7 +285,7 @@ Ddt is a an authoring tool for Perl6.
 
 =item Generate a META6.json
 
-=item Generate a META test with 
+=item Generate a META test by default
 
 =item Support for different licenses
 
