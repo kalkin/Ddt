@@ -3,24 +3,52 @@ use JSON::Pretty;
 use File::Find;
 use License::Software;
 use Ddt::Template;
+use File::Ignore;
 unit class Ddt::Distribution;
+
+sub all-files(IO::Path:D $dir, File::Ignore:D $rules) {
+    my @todo = [$dir];
+    gather while @todo {
+        my IO::Path:D $d = shift @todo;
+        for $d.dir {
+            when $rules.ignore-path: $_ { next }
+            when .d { push @todo, $_}
+            when .f { take $_ }
+        }
+    }
+}
+
+sub enhance-io-path-class($o, $rules) {
+    $o but role {
+        method files {
+            all-files(self, $rules);
+        }
+    }
+}
 
 has META6 $.META6;
 has Str $.main-comp-unit;
-has Bool $.relaxed-name = '-' ∈ $!META6.name.comb;
-has IO::Path $.main-dir where *.d;
+has Bool $.relaxed-name             = '-' ∈ $!META6.name.comb;
+
+has IO::Path $.main-dir  where *.d;
 has IO::Path $.meta-file where *.f;
-has IO::Path $.bin-dir   = $!main-dir.child(<bin>);
-has IO::Path $.hooks-dir = $!main-dir.child(<hooks>);
-has IO::Path $.lib-dir   = $!main-dir.child(<lib>);
-has IO::Path $.test-dir  = $!main-dir.child(<t>);
+
+has IO::Path $.vcs-ignore    =  $!main-dir.child(<.gitignore>);
+has $.ignore-rules  =  do {
+    my Str:D $rules= ".git/*\n";
+    $rules ~= $!vcs-ignore.slurp if $!vcs-ignore.e;
+    File::Ignore.parse: $rules;
+};
+has IO::Path $.bin-dir       =  enhance-io-path-class $!main-dir.child(<bin>), $!ignore-rules;
+has IO::Path $.hooks-dir     =  $!main-dir.child(<hooks>);
+has IO::Path $.lib-dir       =  enhance-io-path-class $!main-dir.child(<lib>), $!ignore-rules;
+has IO::Path $.test-dir      =  enhance-io-path-class $!main-dir.child(<t>), $!ignore-rules;
 
 sub find-meta-file(IO::Path:D $top-dir where *.d) of IO::Path:D {
     my IO::Path:D @candidates = $top-dir.child(<META6.json>),
                                 $top-dir.child(<META.info>);
     return @candidates.grep(:f & :!l).first;
 }
-
 
 multi method new(IO::Path:D $top-dir where *.d) {
     my $meta-file = find-meta-file $top-dir;

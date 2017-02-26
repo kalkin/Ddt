@@ -15,6 +15,7 @@
   },
   "depends" : [
     "File::Find",
+    "File::Ignore",
     "File::Temp",
     "JSON::Pretty",
     "License::Software",
