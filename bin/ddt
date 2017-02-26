@@ -2,3 +2,4 @@
 use v6;
 use Ddt::CLI;
 use Ddt::Plugins::Unit-Generator;
+use Ddt::Plugins::Deps;

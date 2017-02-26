@@ -84,9 +84,9 @@ sub get-client {
 
 my $zef-client;
 
-sub search-unit(Str:D $identity) is export {
+sub search-unit(*@names) is export {
     $zef-client = get-client unless $zef-client.defined;
-    $zef-client.search( str2identity($identity) )
+    $zef-client.search( @names.map(&str2identity) );
 }
 
 sub unit-fetch(Zef::Distribution:D $distri) is export {
@@ -122,6 +122,15 @@ Ddt - Distribution Development Tool similar to mi6
 Ddt is an authoring and distribution development tool for Perl6.
 
 =head2 Features
+
+=item Create new distribution
+=item Hack existing distribution
+=item Build distribution
+=item Test distribution
+=item List distributions dependencies (even those not added to META6.json yet)
+=item Sync module imports to META6.json
+
+=head3 New distribution scaffolding
 
 =item Create a distribution skeleton for Perl6
 

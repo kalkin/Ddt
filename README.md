@@ -27,6 +27,20 @@ Ddt is an authoring and distribution development tool for Perl6.
 Features
 --------
 
+  * Create new distribution
+
+  * Hack existing distribution
+
+  * Build distribution
+
+  * Test distribution
+
+  * List distributions dependencies (even those not added to META6.json yet)
+
+  * Sync module imports to META6.json
+
+### New distribution scaffolding
+
   * Create a distribution skeleton for Perl6
 
   * Generate README.md from lib/Main/Module.pm6's pod
