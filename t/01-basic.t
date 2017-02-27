@@ -1,6 +1,6 @@
 use v6;
 use Test;
-use Ddt:auth;
+use Ddt;
 
 pass "ok";
 

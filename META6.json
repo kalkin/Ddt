@@ -20,7 +20,7 @@
     "Test::META"
   ],
   "test-depends" : [
-    "Ddt:auth",
+    "File::Temp",
     "Test::META"
   ],
   "description" : "Distribution Development Tool similar to mi6",
