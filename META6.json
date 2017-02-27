@@ -22,6 +22,7 @@
     "JSON::Pretty",
     "License::Software",
     "META6",
+    "Pod::To::Markdown",
     "Test::META",
     "Zef",
     "Zef::Client",
