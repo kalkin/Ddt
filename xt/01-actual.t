@@ -60,6 +60,11 @@ subtest "META6 description", {
     =end pod
     EOF
     $r = ddt "build";
+    unless $r.success {
+        diag $r.out;
+        diag $r.err;
+        skip-rest "Failed to regenerate distribution description";
+    }
     $meta = from-json( "META6.json".IO.slurp );
     is $meta<description>, "This is hello module.", "Updated generated description";
 }
