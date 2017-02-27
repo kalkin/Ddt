@@ -8,8 +8,8 @@ use JSON::Pretty;
 
 unit class Ddt;
 
-sub author { qx{git config --global user.name}.chomp }
-sub email { qx{git config --global user.email}.chomp }
+sub author is export { qx{git config --global user.name}.chomp }
+sub email  is export { qx{git config --global user.email}.chomp }
 
 my $normalize-path = -> $path {
     $*DISTRO.is-win ?? $path.subst('\\', '/', :g) !! $path;

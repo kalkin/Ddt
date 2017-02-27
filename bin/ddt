@@ -5,9 +5,6 @@ use Ddt::Distribution;
 use META6;
 use License::Software;
 
-sub author { qx{git config --global user.name}.chomp }
-sub email { qx{git config --global user.email}.chomp }
-
 #| Create new module
 multi MAIN("new",
             $module is copy, #= Module::To::Create
