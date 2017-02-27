@@ -39,6 +39,8 @@ Features
 
   * Sync module imports to META6.json
 
+  * Watch for distribution file changes and execute command
+
 ### New distribution scaffolding
 
   * Create a distribution skeleton for Perl6

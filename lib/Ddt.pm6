@@ -129,6 +129,7 @@ Ddt is an authoring and distribution development tool for Perl6.
 =item Test distribution
 =item List distributions dependencies (even those not added to META6.json yet)
 =item Sync module imports to META6.json
+=item Watch for distribution file changes and execute command
 
 =head3 New distribution scaffolding
 

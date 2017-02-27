@@ -66,6 +66,22 @@ multi method new(Str $meta-file) { self.new($meta-file.IO) }
 
 method name of Str:D { return $.META6<name>; }
 
+method watch {
+    my Supplier $supplier .= new;
+    my $rules = $.ignore-rules;
+    my @dirs = [$.lib-dir, $.test-dir, $.bin-dir];
+    while @dirs {
+        my $d = shift @dirs;
+        IO::Notification.watch-path($d).tap: { $supplier.emit: $_ };
+        for dir($d) -> $p {
+            when $rules.ignore-path($p) { next }
+            when $p.d { @dirs.push: $p };
+            default { IO::Notification.watch-path($p).tap: { $supplier.emit: $_ } };
+        }
+    }
+    $supplier.Supply.stable(0.5)
+}
+
 method generate-all(:$force?) {
     self!make-directories;
     self!make-content;

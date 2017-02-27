@@ -63,9 +63,7 @@ multi MAIN("test",
     @args.push: "--state=$state" if $state.defined;
 
     if $continues {
-        my Proc::Async $proc;
-        my IO::Path:D @files = qx{git ls-files}.chomp.lines».IO;
-        $proc = Proc::Async.new: 'prove', @args, '--exec', 'perl6 -Ilib', @tests;
+        my Proc::Async $proc .= new: 'prove', @args, '--exec', 'perl6 -Ilib', @tests;
         $proc.start;
 
         $ddt.watch.act: {
@@ -80,7 +78,6 @@ multi MAIN("test",
         run 'prove', @args, '--exec', 'perl6 -Ilib', @tests;
     }
 }
-
 
 #| Make release
 multi MAIN("release") is export
