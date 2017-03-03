@@ -72,6 +72,7 @@ method watch {
     my @dirs = [$.lib-dir, $.test-dir, $.bin-dir];
     while @dirs {
         my $d = shift @dirs;
+        next if !$d.e;
         IO::Notification.watch-path($d).tap: { $supplier.emit: $_ };
         for dir($d) -> $p {
             when $rules.ignore-path($p) { next }
