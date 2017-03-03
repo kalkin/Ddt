@@ -101,50 +101,50 @@ sub local-mirror($uri) of IO::Path:D is export {
 
 =begin pod
 
-=head1 NAME
+=NAME Ddt - Distribution Development Tool
 
-Ddt - Distribution Development Tool similar to mi6
+=SYNOPSIS
 
-=head1 SYNOPSIS
-
-  > ddt new Foo::Bar # create Foo-Bar distribution
+  > ddt --license-name=LGPL new Foo::Bar # create Foo-Bar distribution
   > cd Foo-Bar
   > ddt build        # build the distribution and re-generate README.md & META6.json
-  > ddt test         # Run tests
+  > ddt -C test      # Run tests when files change
+
+=DESCRIPTION
+
+B<Ddt> is an authoring and distribution development tool for Perl6. It provides
+scaffolding for generating new distributions, packages, modules, grammers,
+classes and roles.
+
+=WARNING
+This project is a technology preview. It may change at any point. The only API
+which can be considered stable up to the C<v1.0> is the command line interface.
+
+=USAGE
+
+  ddt [--license-name=«NAME»] new <module> -- Create new module
+  ddt build                                -- Build the distribution & README.md
+  ddt [-C|--continues] test [<tests> …]    -- Run distribution tests
+  ddt release                              -- Make release
+  ddt hack <identity> [<dir>]              -- Checkout a Distribution and start hacking on it
+  ddt generate class <name>                -- Generate a class
+  ddt generate role <name>                 -- Generate a role
+  ddt generate package <name>              -- Generate a package
+  ddt generate grammar <name>              -- Generate a grammar
+  ddt generate module <name>               -- Generate a module
+  ddt generate test <name> [<description>] -- Generate stub test file
+  ddt [-v] deps distri                     -- Show all the modules used
+  ddt [-u|--update] deps                   -- Update META6.json dependencies
+  ddt watch [<cmd>…]                       -- Watch lib/, bin/ & t/ for changes respecting .gitignore and execute given cmd
+
 
 =head1 INSTALLATION
 
   # with zef
   > zef install Ddt
 
-=head1 DESCRIPTION
 
-Ddt is an authoring and distribution development tool for Perl6.
-
-=head2 Features
-
-=item Create new distribution
-=item Hack existing distribution
-=item Build distribution
-=item Test distribution
-=item List distributions dependencies (even those not added to META6.json yet)
-=item Sync module imports to META6.json
-=item Watch for distribution file changes and execute command
-
-=head3 New distribution scaffolding
-
-=item Create a distribution skeleton for Perl6
-
-=item Generate README.md from lib/Main/Module.pm6's pod
-
-=item Generate a META6.json
-
-=item Generate a META test by default
-
-=item Support for different licenses
-
-
-=head2 Differences to Mi6
+=head1 Differences to Mi6
 
 =item Support for different licenses via C<License::Software>
 
@@ -152,37 +152,39 @@ Ddt is an authoring and distribution development tool for Perl6.
 
 =item Meta test
 
-=item Use zef for tests
+=item Use prove for tests
+
+=item Run tests on changes
 
 =item Extended .gitignore
 
 =item Support for different licenses
 
-=item Support for Distributions with a hyphen in the namel
+=item Support for Distributions with a hyphen in the name
 
 =head1 FAQ
 
 =item How can I manage depends, build-depends, test-depends?
 
-  Write them to META6.json directly :)
+Use C<ddt -u deps>
 
-=item Where is Changes file?
-
-  TODO
 
 =item Where is the spec of META6.json?
 
-  Maybe https://github.com/perl6/ecosystem/blob/master/spec.pod or http://design.perl6.org/S22.html
+Maybe https://github.com/perl6/ecosystem/blob/master/spec.pod or http://design.perl6.org/S22.html
 
-=item How do I remove travis badge?
+=item How do I remove the travis badge?
 
-  Remove .travis.yml
+Remove .travis.yml
+
 
 =head1 SEE ALSO
 
-L<<https://github.com/tokuhirom/Minilla>>
+=item L<https://github.com/skaji/mi6>
 
-L<<https://github.com/rjbs/Dist-Zilla>>
+=item L<https://github.com/tokuhirom/Minilla>
+
+=item L<https://github.com/rjbs/Dist-Zilla>
 
 =head1 AUTHOR
 
