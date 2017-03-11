@@ -6,10 +6,11 @@ gitignore => qq:to/EOF/,
 /blib/
 /src/*.o
 /src/Makefile
-/.panda-work
 /resources/*.so
 /resources/*.dylib
 .precomp/
+# Prove saved state
+.prove
 # Vim swap files
 [._]*.s[a-w][a-z]
 [._]s[a-w][a-z]
@@ -30,11 +31,10 @@ language: perl6
 perl6:
   - latest
 install:
-  - rakudobrew build-panda
-  - panda --notests installdeps .
+  - rakudobrew build zef
+  - zef --/test --depsonly install .
 script:
-  - perl6 -MPanda::Builder -e 'Panda::Builder.build(~\$*CWD)'
-  - PERL6LIB=\$PWD/lib prove -e perl6 -vr t/
+  - zef test .
 sudo: false
 EOF
 

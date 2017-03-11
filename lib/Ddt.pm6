@@ -1,296 +1,150 @@
 use v6;
-use Ddt::Template;
-use META6;
-use File::Find;
-use Shell::Command;
-use License::Software;
-use JSON::Pretty;
+use File::Temp;
+use Zef;
+use Zef::Client;
+use Zef::Config;
+use Zef::Identity;
 
-unit class Ddt;
+unit module Ddt;
+
+sub to-name(Str:D $name, Str $dist-prefix?) of Str:D is export {
+    when  !$dist-prefix.defined {
+        if $name.starts-with: '::' {
+            die 'unit name starts with "::" but no $dist-prefix provided'
+        }
+        return $name
+    }
+    when $name.starts-with: $dist-prefix { return $name }
+    when $name.starts-with: '::'         { return $dist-prefix ~ $name }
+    default { return $dist-prefix ~ '::' ~ $name }
+}
+
+sub name-to-file(Str:D $name) of Str:D is export {
+    join("/",  gather for $name.split('::') -> $c {
+        take $c
+    }) ~ ".pm6"
+}
 
 sub author is export { qx{git config --global user.name}.chomp }
-sub email  is export { qx{git config --global user.email}.chomp }
-
-my $normalize-path = -> $path {
-    $*DISTRO.is-win ?? $path.subst('\\', '/', :g) !! $path;
-};
-my $to-module = -> $file {
-    $normalize-path($file).subst('lib/', '').subst('/', '::', :g).subst(/\.pm6?$/, '');
-};
-my $to-file = -> $module {
-    'lib/' ~ $module.subst('::', '/', :g) ~ '.pm6';
-};
-
-has $.module;
-has $.module-file;
-
-multi method new {
-    my ($module, $module-file) = guess-main-module();
-    self.bless(:$module, :$module-file);
-}
-
-multi method new($module is copy) {
-    $module ~~ s:g/ '-' /::/;
-    my $module-file = $to-file($module);
-    self.bless(:$module, :$module-file);
-}
-
-
-multi method cmd('build', $license) {
-    my ($module, $module-file) = guess-main-module();
-    if migrate-travis-yml() {
-        note "==> migrated .travis.yml for latest panda change";
+sub email is export { qx{git config --global user.email}.chomp }
+sub TOPDIR of IO::Path:D is export {
+    my Proc:D $proc = Proc.new(:out, :err);
+    $proc.shell: 'git rev-parse --show-toplevel';
+    my $dir = $proc.out.slurp-rest;
+    unless $dir {
+        return fail "Not in a repository"
     }
-    regenerate-readme($module-file);
-    self.regenerate-meta-info($module, $module-file, $license);
-    build();
+    return $dir.chomp.IO
 }
 
-multi method cmd('build') {
-    if migrate-travis-yml() {
-        note "==> migrated .travis.yml for latest panda change";
+class Result is export(:TEST) {
+    has $.out;
+    has $.err;
+    has $.exit;
+    method success() { $.exit == 0 }
+}
+
+sub ddt(*@arg) is export(:TEST) {
+    my $base = $*SPEC.catdir($?FILE.IO.dirname, "..");
+    my ($o, $out) = tempfile;
+    my ($e, $err) = tempfile;
+    my $s = run $*EXECUTABLE, "-I$base/lib", "$base/bin/ddt", |@arg, :out($out), :err($err);
+    .close for $out, $err;
+    my $r = Result.new(:out($o.IO.slurp), :err($e.IO.slurp), :exit($s.exitcode));
+    unlink($_) for $o, $e;
+    $r;
+}
+
+
+sub get-client {
+    my $config = do {
+        # The .Str.IO thing is due to a weird rakudo bug I can't figure out .
+        # A bare .IO will complain that its being called on a type Any (not true)
+        my $path = Zef::Config::guess-path;
+        my $IO   = $path.Str.IO;
+        my %hash = Zef::Config::parse-file($path).hash;
+        class :: {
+            has $.IO;
+            has %.hash handles <AT-KEY EXISTS-KEY DELETE-KEY push append iterator list kv keys values>;
+        }.new(:%hash, :$IO);
     }
-    regenerate-readme($.module-file);
-    self.regenerate-meta-info($.module, $.module-file);
-    build();
-}
-
-multi method cmd('release') {
-    self.cmd('build');
-    my ($user, $repo) = guess-user-and-repo();
-    die "Cannot find user and repository setting" unless $repo;
-    my $meta-file = <META6.json META.info>.grep({.IO ~~ :f & :!l})[0];
-    print "\n" ~ qq:to/EOF/ ~ "\n";
-      Are you ready to release your module? Congrats!
-      For this, follow these steps:
-
-      1. Fork https://github.com/perl6/ecosystem repository.
-      2. Add https://raw.githubusercontent.com/$user/$repo/master/$meta-file to META.list.
-      3. And raise a pull request!
-
-      Once your pull request is merged, we can install your module by:
-      \$ zef install $.module
-    EOF
-}
-
-sub withp6lib(&code) {
-    temp %*ENV;
-    %*ENV<PERL6LIB> = %*ENV<PERL6LIB>:exists ?? "$*CWD/lib," ~ %*ENV<PERL6LIB> !! "$*CWD/lib";
-    &code();
-}
-
-sub build() {
-    return unless "Build.pm".IO.e;
-    require Panda::Builder;
-    note '==> Execute Panda::Builder.build(~$*CWD)';
-    ::("Panda::Builder").build(~$*CWD);
-}
-
-sub regenerate-readme($module-file) {
-    my @cmd = $*EXECUTABLE, "--doc=Markdown", $module-file;
-    my $p = withp6lib { run |@cmd, :out };
-    die "Failed @cmd[]" if $p.exitcode != 0;
-    my $markdown = $p.out.slurp-rest;
-    my ($user, $repo) = guess-user-and-repo();
-    my $header = do if $user and ".travis.yml".IO.e {
-        "[![Build Status](https://travis-ci.org/$user/$repo.svg?branch=master)]"
-            ~ "(https://travis-ci.org/$user/$repo)"
-            ~ "\n\n";
-    } else {
-        "";
-    }
-
-    spurt "README.md", $header ~ $markdown;
-}
-
-multi method regenerate-meta-info(License::Software::Abstract $license) {
-    my ($module, $module-file) = guess-main-module();
-    callwith $module, $module-file, $license;
-}
-
-multi method regenerate-meta-info($module, $module-file, License::Software::Abstract $license?) {
-    my $meta-file = <META.info>.IO ~~ :f & :!l ?? <META.info> !! <META6.json> ;
-    my $meta = META6.new: file => $meta-file;
-
-    $meta.perl-version = $*PERL.version unless $meta.perl-version.defined;
-    $meta.name = $module;
-    if $meta.authors ~~ Empty || author() ∉ $meta.authors {
-        $meta.authors.push: author()
-    }
-    if $meta.test-depends ~~ Empty || "Test::META" ∉ $meta.test-depends {
-        $meta.test-depends.push: "Test::META"
-    }
-    $meta.description = find-description($module-file) || $meta.description;
-    $meta.provides = find-provides();
-    $meta.source-url = find-source-url() unless $meta.source-url.defined;
-    $meta.version = "*" unless $meta.source-url.defined;
-    if $license.defined and !$meta.license.defined {
-        $meta.license = $license.url
-    }
-
-    $meta-file.IO.spurt: meta-to-json($meta);
-}
-
-sub find-description($module-file) {
-    my $content = $module-file.IO.slurp;
-    if $content ~~ /^^
-        '=' head. \s+ NAME
-        \s+
-        \S+ \s+ '-' \s+ (\S<-[\n]>*)
-    / {
-        return $/[0].Str;
-    } else {
-        return "";
-    }
-}
-
-# FIXME
-sub migrate-travis-yml() {
-    my $travis-yml = ".travis.yml".IO;
-    return False unless $travis-yml.f;
-    my %fix =
-        q!  - perl6 -MPanda::Builder -e 'Panda::Builder.build($*CWD)'!
-            => q!  - perl6 -MPanda::Builder -e 'Panda::Builder.build(~$*CWD)'!,
-        q!  - PERL6LIB=$PWD/blib/lib prove -e perl6 -vr t/!
-            => q!  - PERL6LIB=$PWD/lib prove -e perl6 -vr t/!,
-        q!  - PERL6LIB=$PWD/blib/lib prove -e perl6 -r t/!
-            => q!  - PERL6LIB=$PWD/lib prove -e perl6 -vr t/!,
-    ;
-
-    my @lines = $travis-yml.lines;
-    my @out;
-    my $replaced = False;
-    for @lines -> $line {
-        if %fix{$line} -> $fix {
-            @out.push($fix);
-            $replaced = True;
-        } else {
-            @out.push($line);
+    my $verbosity = DEBUG;
+    my $client = Zef::Client.new(:$config);
+    my $logger = $client.logger;
+    my $log    = $logger.Supply.grep({ .<level> <= $verbosity });
+    $log.tap: -> $m {
+        given $m.<phase> {
+            when BEFORE { say "===> {$m.<message>}" }
+            when AFTER  { say "===> {$m.<message>}" }
+            default     { say $m.<message> }
         }
     }
-    return False unless $replaced;
-    given $travis-yml.open(:w) -> $fh {
-        LEAVE { $fh.close }
-        $fh.say($_) for @out;
-    }
-    return True;
+    $client;
 }
 
-sub find-source-url() {
-    try my @line = qx{git remote -v 2>/dev/null};
-    return "" unless @line;
-    my $url = gather for @line -> $line {
-        my ($, $url) = $line.split(/\s+/);
-        if $url {
-            take $url;
-            last;
-        }
-    }
-    return "" unless $url;
-    $url .= Str;
-    $url ~~ s/^https?/git/; # panda does not support http protocol
-    if $url ~~ m/'git@' $<host>=[.+] ':' $<repo>=[<-[:]>+] $/ {
-        $url = "git://$<host>/$<repo>";
-    } elsif $url ~~ m/'ssh://git@' $<rest>=[.+] / {
-        $url = "git://$<rest>";
-    }
-    $url;
+my $zef-client;
+
+sub search-unit(*@names) is export {
+    $zef-client = get-client unless $zef-client.defined;
+    $zef-client.search( @names.map(&str2identity) );
 }
 
-sub guess-user-and-repo() {
-    my $url = find-source-url();
-    return if $url eq "";
-    if $url ~~ m{ (git|https?) '://'
-        [<-[/]>+] '/'
-        $<user>=[<-[/]>+] '/'
-        $<repo>=[.+?] [\.git]?
-    $} {
-        return $/<user>, $/<repo>;
-    } else {
-        return;
-    }
+sub unit-fetch(Zef::Distribution:D $distri) is export {
+    $zef-client = get-client unless $zef-client.defined;
+    $zef-client.fetch($distri);
 }
 
-sub find-provides() {
-    my %provides = find(dir => "lib", name => /\.pm6?$/).list.map(-> $file {
-        my $module = $to-module($file.Str);
-        $module => $normalize-path($file.Str);
-    }).sort;
-    %provides;
-}
-
-sub guess-main-module() {
-    die "Must run in the top directory" unless "lib".IO ~~ :d;
-    my @module-files = find(dir => "lib", name => /.pm6?$/).list;
-    my $num = @module-files.elems;
-    given $num {
-        when 0 {
-            die "Could not determine main module file";
-        }
-        when 1 {
-            my $f = @module-files[0];
-            return ($to-module($f), $f);
-        }
-        default {
-            my $dir = $*CWD.basename;
-            $dir ~~ s/^ (perl6|p6) '-' //;
-            my $module = $dir.split('-').join('/');
-            my @found = @module-files.grep(-> $f { $f ~~ m:i/$module . pm6?$/});
-            my $f = do if @found == 0 {
-                my @f = @module-files.sort: { $^a.chars <=> $^b.chars };
-                @f.shift.Str;
-            } elsif @found == 1 {
-                @found[0].Str;
-            } else {
-                my @f = @found.sort: { $^a.chars <=> $^b.chars };
-                @f.shift.Str;
-            }
-            return ($to-module($f), $f);
-        }
-    }
-}
-
-our sub meta-to-json(META6 $meta --> Str:D) {
-    my %h = from-json($meta.to-json: :skip-null).pairs.grep: *.value !~~ Empty;
-    to-json(%h);
+sub local-mirror($uri) of IO::Path:D is export {
+    $zef-client = get-client unless $zef-client.defined;
+    $zef-client.config<TempDir>.IO.child($uri.IO.basename)
 }
 
 =begin pod
 
-=head1 NAME
+=NAME Ddt - Distribution Development Tool
 
-Ddt - Distribution Development Tool similar to mi6
+=SYNOPSIS
 
-=head1 SYNOPSIS
-
-  > ddt new Foo::Bar # create Foo-Bar distribution
+  > ddt --license-name=LGPL new Foo::Bar # create Foo-Bar distribution
   > cd Foo-Bar
   > ddt build        # build the distribution and re-generate README.md & META6.json
-  > ddt test         # Run tests 
+  > ddt -C test      # Run tests when files change
+
+=DESCRIPTION
+
+B<Ddt> is an authoring and distribution development tool for Perl6. It provides
+scaffolding for generating new distributions, packages, modules, grammers,
+classes and roles.
+
+=WARNING
+This project is a technology preview. It may change at any point. The only API
+which can be considered stable up to the C<v1.0> is the command line interface.
+
+=USAGE
+
+  ddt [--license-name=«NAME»] new <module> -- Create new module
+  ddt build                                -- Build the distribution & README.md
+  ddt [-C|--continues] test [<tests> …]    -- Run distribution tests
+  ddt release                              -- Make release
+  ddt hack <identity> [<dir>]              -- Checkout a Distribution and start hacking on it
+  ddt generate class <name>                -- Generate a class
+  ddt generate role <name>                 -- Generate a role
+  ddt generate package <name>              -- Generate a package
+  ddt generate grammar <name>              -- Generate a grammar
+  ddt generate module <name>               -- Generate a module
+  ddt generate test <name> [<description>] -- Generate stub test file
+  ddt [-v] deps distri                     -- Show all the modules used
+  ddt [-u|--update] deps                   -- Update META6.json dependencies
+  ddt watch [<cmd>…]                       -- Watch lib/, bin/ & t/ for changes respecting .gitignore and execute given cmd
+
 
 =head1 INSTALLATION
 
   # with zef
   > zef install Ddt
 
-=head1 DESCRIPTION
 
-Ddt is an authoring and distribution development tool for Perl6.
-
-=head2 Features
-
-=item Create a distribution skeleton for Perl6
-
-=item Generate README.md from lib/Main/Module.pm6's pod
-
-=item Generate a META6.json
-
-=item Generate a META test by default
-
-=item Support for different licenses
-
-
-=head2 Differences to Mi6
+=head1 Differences to Mi6
 
 =item Support for different licenses via C<License::Software>
 
@@ -298,37 +152,39 @@ Ddt is an authoring and distribution development tool for Perl6.
 
 =item Meta test
 
-=item Use zef for tests
+=item Use prove for tests
+
+=item Run tests on changes
 
 =item Extended .gitignore
 
 =item Support for different licenses
 
-=item Support for Distributions with a hyphen in the namel
+=item Support for Distributions with a hyphen in the name
 
 =head1 FAQ
 
 =item How can I manage depends, build-depends, test-depends?
 
-  Write them to META6.json directly :)
+Use C<ddt -u deps>
 
-=item Where is Changes file?
-
-  TODO
 
 =item Where is the spec of META6.json?
 
-  Maybe https://github.com/perl6/ecosystem/blob/master/spec.pod or http://design.perl6.org/S22.html
+Maybe https://github.com/perl6/ecosystem/blob/master/spec.pod or http://design.perl6.org/S22.html
 
-=item How do I remove travis badge?
+=item How do I remove the travis badge?
 
-  Remove .travis.yml
+Remove .travis.yml
+
 
 =head1 SEE ALSO
 
-L<<https://github.com/tokuhirom/Minilla>>
+=item L<https://github.com/skaji/mi6>
 
-L<<https://github.com/rjbs/Dist-Zilla>>
+=item L<https://github.com/tokuhirom/Minilla>
+
+=item L<https://github.com/rjbs/Dist-Zilla>
 
 =head1 AUTHOR
 

@@ -8,24 +8,44 @@
   "auth" : "kalkin",
   "provides" : {
     "Ddt::Template" : "lib/Ddt/Template.pm6",
+    "Ddt::CLI" : "lib/Ddt/CLI.pm6",
+    "Ddt::Plugins::Deps" : "lib/Ddt/Plugins/Deps.pm6",
+    "Ddt::Plugins::Watch" : "lib/Ddt/Plugins/Watch.pm6",
     "Ddt::Distribution" : "lib/Ddt/Distribution.pm6",
+    "Ddt::Plugins::Unit-Generator" : "lib/Ddt/Plugins/Unit-Generator.pm6",
     "Ddt" : "lib/Ddt.pm6"
   },
   "depends" : [
     "File::Find",
+    "File::Ignore",
+    "File::Temp",
     "JSON::Pretty",
     "License::Software",
     "META6",
     "Pod::To::Markdown",
-    "Shell::Command",
-    "Test::META"
+    "Test::META",
+    "Zef",
+    "Zef::Client",
+    "Zef::Config",
+    "Zef::Distribution",
+    "Zef::Identity"
+  ],
+  "tags" : [
+    "authoring",
+    "command line",
+    "devel",
+    "development",
+    "generator",
+    "module",
+    "testing",
+    "utility"
   ],
   "test-depends" : [
     "File::Temp",
     "Test::META"
   ],
-  "description" : "Distribution Development Tool similar to mi6",
-  "version" : "0.3.2",
+  "description" : "Distribution Development Tool",
+  "version" : "0.4.0",
   "meta6" : "0",
   "authors" : [
     "Shoichi Kaji",

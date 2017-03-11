@@ -1,64 +1,50 @@
 use v6;
 use Test;
 use File::Temp;
+use Ddt :TEST;
 use JSON::Pretty;
-my class Result {
-    has $.out;
-    has $.err;
-    has $.exit;
-    method success() { $.exit == 0 }
-}
 
+plan 2;
 
-my $base = $*SPEC.catdir($?FILE.IO.dirname, "..");
-sub ddt(*@arg) is export {
-    my ($o, $out) = tempfile;
-    my ($e, $err) = tempfile;
-    my $s = run $*EXECUTABLE, "-I$base/lib", "$base/bin/ddt", |@arg, :out($out), :err($err);
-    .close for $out, $err;
-    my $r = Result.new(:out($o.IO.slurp), :err($e.IO.slurp), :exit($s.exitcode));
-    unlink($_) for $o, $e;
-    $r;
-}
-
-my $r;
-$r = ddt "new";
-ok !$r.success;
-
-$r = ddt "unknown";
-ok !$r.success;
-
-my $tempdir = tempdir;
-{
-    temp $*CWD = $tempdir.IO;
-    $r = ddt '--license-name=Apache2', "new", "Foo::Bar";
-    say $r;
-    ok $r.success;
-    ok "Foo-Bar".IO.d;
+subtest "ddt new command", {
+    plan 8;
+    temp $*CWD = tempdir.IO;
+    nok ddt("new").success;
+    nok ddt("unknown").success;
+    my $r = ddt '--license-name=Apache2', "new", "Foo::Bar";
+    unless $r.success {
+        diag $r.out;
+        diag $r.err;
+        skip-rest "Failed to create distribution";
+    }
+    ok "Foo-Bar".IO.d, "Distribution directory is created";
     chdir "Foo-Bar";
-    ok $_.IO.e for <.git  .gitignore  .travis.yml  LICENSE  META6.json  README.md  bin  lib  t>;
-    ok !"xt".IO.d;
-    ok "lib/Foo/Bar.pm6".IO.e;
-    $r = ddt "test";
-    ok $r.success;
-    like $r.out, rx/All \s+ tests \s+ successful/;
+    subtest "All expected files exist", {
+        my @expected = <.git  .gitignore  .travis.yml  LICENSE  META6.json  README.md  bin  lib  t>;
+        plan @expected.elems;
+        for @expected {
+            ok $*CWD.child($_).e, "$_ exists"
+        }
+    }
+    ok !"xt".IO.d, "By default no xt/ dir";
+    ok "lib/Foo/Bar.pm6".IO.e, "Unit file created";
+    ok ddt("test").success, "Tests passed";
 
-    mkdir "t";
     "t/01-fail.t".IO.spurt: q:to/EOF/;
     use Test;
     plan 1;
     ok False;
     EOF
-    $r = ddt "test";
-    ok !$r.success;
-    like $r.out, rx/Failed/;
+    nok ddt("test").success, "Tests should fail";
 }
-{
-    temp $*CWD = $tempdir.IO;
-    $r = ddt "new", "Hello";
+
+subtest "META6 description", {
+    temp $*CWD = tempdir.IO;
+    plan 2;
+    my $r = ddt "new", "Hello";
     chdir "Hello";
     my $meta = from-json( "META6.json".IO.slurp );
-    is $meta<description>, "blah blah blah";
+    is $meta<description>, "blah blah blah", "Default generated description";
     "lib/Hello.pm6".IO.spurt: q:to/EOF/;
     use v6;
     unit module Hello;
@@ -74,8 +60,11 @@ my $tempdir = tempdir;
     =end pod
     EOF
     $r = ddt "build";
+    unless $r.success {
+        diag $r.out;
+        diag $r.err;
+        skip-rest "Failed to regenerate distribution description";
+    }
     $meta = from-json( "META6.json".IO.slurp );
-    is $meta<description>, "This is hello module.";
+    is $meta<description>, "This is hello module.", "Updated generated description";
 }
-
-done-testing;
