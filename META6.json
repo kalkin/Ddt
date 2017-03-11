@@ -30,12 +30,22 @@
     "Zef::Distribution",
     "Zef::Identity"
   ],
+  "tags" : [
+      "authoring",
+      "command line",
+      "devel",
+      "development",
+      "generator",
+      "module",
+      "testing",
+      "utility"
+  ],
   "test-depends" : [
     "File::Temp",
     "Test::META"
   ],
-  "description" : "Distribution Development Tool similar to mi6",
-  "version" : "0.3.3",
+  "description" : "Distribution Development Tool",
+  "version" : "0.4.0",
   "meta6" : "0",
   "authors" : [
     "Shoichi Kaji",
