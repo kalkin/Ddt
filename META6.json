@@ -1,5 +1,6 @@
 {
   "name" : "Ddt",
+  "license" : "Artistic-2.0",
   "source-url" : "https://github.com/kalkin/Ddt.git",
   "support" : {
     "source" : null
