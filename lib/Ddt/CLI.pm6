@@ -16,10 +16,10 @@ multi MAIN("new",
 
     mkdir($main-dir);
     my $license-holder = author() ~ " " ~ email();
-    my $url = License::Software::get($license-name).new($license-holder).url;
+    my $spdx = License::Software::get($license-name).new($license-holder).spdx;
     my $meta = META6.new:   name => $distri-name,
                             authors => [author()],
-                            license => $url,
+                            license => $spdx,
                             version => Version.new('*'),
                             perl-version => $*PERL.version;
 
