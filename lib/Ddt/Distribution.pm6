@@ -113,7 +113,7 @@ method generate-META6 {
     $meta.provides = self.find-provides;
     $meta.source-url = find-source-url() unless $meta.source-url.defined;
     $meta.version = "*" unless $meta.source-url.defined;
-    $meta.license = self!license.url unless !$meta.license.defined;
+    $meta.license = self!license.spdx unless !$meta.license.defined;
 
     $.meta-file.IO.spurt: meta-to-json($meta);
 }
@@ -169,7 +169,7 @@ method !init-vcs-repo {
 
 
 method !license of License::Software::Abstract {
-    License::Software::from-url($.META6.license).new: author() ~ " " ~ email();
+    License::Software::get($.META6.license).new: author() ~ " " ~ email();
 }
 
 method find-provides {
