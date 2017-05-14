@@ -25,8 +25,8 @@ sub name-to-file(Str:D $name) of Str:D is export {
     }) ~ ".pm6"
 }
 
-sub author is export { qx{git config --global user.name}.chomp }
-sub email is export { qx{git config --global user.email}.chomp }
+sub author is export { qx{git config  user.name}.chomp }
+sub email is export { qx{git config user.email}.chomp }
 sub TOPDIR of IO::Path:D is export {
     my Proc:D $proc = Proc.new(:out, :err);
     $proc.shell: 'git rev-parse --show-toplevel';

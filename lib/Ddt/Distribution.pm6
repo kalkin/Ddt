@@ -177,8 +177,8 @@ method find-provides {
         ==> map { self!to-module($_) => $_.relative($.main-dir) } ==> sort;
 }
 
-sub author { qx{git config --global user.name}.chomp }
-sub email { qx{git config --global user.email}.chomp }
+sub author { qx{git config user.name}.chomp }
+sub email { qx{git config user.email}.chomp }
 sub find-description($module-file) {
     my $content = $module-file.IO.slurp;
     if $content ~~ /^^
