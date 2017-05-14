@@ -56,24 +56,24 @@ Just some random thoughts which should be taken with a grant of salt.
   - OUTCOME: Lost at next upgrade or forgotten and never merged with upstream
 
 * Invalid Approaches
- - Using `zef look App-Foo` it will drop you in a directory without any version
- control
+  - Using `zef look App-Foo` it will drop you in a directory without any
+    version control
 
 * Sensible Approach
- - get Source-url from `zef info App-Foo`
- - Hope it's some kind of version control url
- - do vcs clone source-url
- - HACK
- - run `zef test`, `prove`, `prove6` or whatever is suitable for current case
- - do vcs commit when ready
- - use `zef --force install .` to deploy when ready
- - fork the github repo (i.e: via `hub` `git fork`)
- - make a pr (i.e. via `hub` `git pr`)
-   * Pr is accepted for the current distribution version
-   * Pr needs to be rebased on the current master
-   * Not accepted: create an own `App::Foo:auth(user):ver(X.Y.Z)` which
-    emulates `App::Foo:ver(X.Y.Z)`. Release new Distribution and may the fork be
-    with you!
+  - get Source-url from `zef info App-Foo`
+  - Hope it's some kind of version control url
+  - do vcs clone source-url
+  - HACK
+  - run `zef test`, `prove`, `prove6` or whatever is suitable for current case
+  - do vcs commit when ready
+  - use `zef --force install .` to deploy when ready
+  - fork the github repo (i.e: via `hub` `git fork`)
+  - make a pr (i.e. via `hub` `git pr`)
+    * Pr is accepted for the current distribution version
+    * Pr needs to be rebased on the current master
+    * Not accepted: create an own `App::Foo:auth(user):ver(X.Y.Z)` which
+     emulates `App::Foo:ver(X.Y.Z)`. Release new Distribution and may the fork be
+     with you!
 
 The **Sensible Approach** has three phases:
  - get version controlled source code for a unit name so you can comfortably
@@ -82,7 +82,7 @@ The **Sensible Approach** has three phases:
  - deploying and maintaining own set of patches on top of the distribution
  - distributing changes
 
-### Adding an App to the current distribution
+### Adding an executable script to the current distribution
 
 ## How to handle Meta distributions?
 
@@ -98,20 +98,17 @@ issues:
 My current issue with that is it makes it harder for the user to contribute back
 to the project in a way described in **Sensible Aproach** because:
 
-  - You need all the source code from which the distribution is
-  generated, which may be not deployed on your system. This might be an issue if
-  you have no network connection at the moment. It enforces the human to fall
-  back to the **Stupid Aproach**
-  - Let's hope the distribution authors thought about adding all the relevant
-  tests to the distribution from the main source repository. This might be not
-  an issue if the distribution is generated with a smart tool.
+- You need all the source code from which the distribution is
+generated, which may be not deployed on your system. This might be an issue if
+you have no network connection at the moment. It enforces the human to fall
+back to the **Stupid Aproach**
+- Let's hope the distribution authors thought about adding all the relevant
+tests to the distribution from the main source repository. This might be not
+an issue if the distribution is generated with a smart tool.
+- How do you integrate with the currently cripled non cpan infrastructure?
+- How to build the distribution locally and install it with zef?
 
-  - How do you integrate with the currently cripled non cpan infrastructure? You
-  need some kind
-
- - then how to build the distribution locally and install it with zef?
-
-## How to handle different unit versions in the source repository
+# How to handle different unit versions in the source repository
 
 ### Issues
 - Should they be packaged as separate minimal distributions? If so how to
