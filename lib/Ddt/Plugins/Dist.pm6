@@ -174,6 +174,7 @@ module Ddt::Plugins::Dist
 
     sub prepare-and-package-dist( $dist-name, @dist-files )
     {
+<<<<<<< HEAD
         for @dist-files -> $file {
             add-to-dist( $dist-name, $file )
         }
@@ -182,11 +183,20 @@ module Ddt::Plugins::Dist
             say $result;
             exit(-1);
         }
+=======
+        for @dist-files -> $file
+        {
+            add-to-dist( $dist-name, $file )
+        }
+
+        return package-dist( $dist-name );
+>>>>>>> 603bcec39680bad143de411863d0c7ac5609684a
     }
 
     # code taken from mi6
     sub package-dist( $dist-name )
     {
+<<<<<<< HEAD
         my %env = %*ENV;
         %env<$_> = 1 for <COPY_EXTENDED_ATTRIBUTES_DISABLE COPYFILE_DISABLE>;
         my $proc = run "tar", "czf", "$dist-name.tar.gz", $dist-name, :!out, :err, :%env;
@@ -201,6 +211,18 @@ module Ddt::Plugins::Dist
         }
 
         return True;
+=======
+         my %env = %*ENV;
+         %env<$_> = 1 for <COPY_EXTENDED_ATTRIBUTES_DISABLE COPYFILE_DISABLE>;
+         my $proc = run "tar", "czf", "$dist-name.tar.gz", $dist-name, :!out, :err, :%env;
+         rm_rf $dist-name if $dist-name.IO.d;
+         LEAVE $proc && $proc.err.close;
+         if $proc.exitcode != 0 {
+             my $exitcode = $proc.exitcode;
+             my $err = $proc.err.slurp;
+             die $err ?? $err !! "can't create tarball, exitcode = $exitcode";
+         }
+>>>>>>> 603bcec39680bad143de411863d0c7ac5609684a
     }
 
     sub prune-files( @files ) {
