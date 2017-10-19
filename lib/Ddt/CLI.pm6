@@ -20,7 +20,7 @@ multi MAIN("new",
     my $meta = META6.new:   name => $distri-name,
                             authors => [author()],
                             license => $spdx,
-                            version => Version.new('*'),
+                            version => Version.new('0.0.1'),
                             perl-version => $*PERL.version;
 
     my $meta-file = $main-dir.IO.child(<META6.json>);
