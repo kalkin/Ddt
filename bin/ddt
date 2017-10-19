@@ -4,3 +4,4 @@ use Ddt::CLI;
 use Ddt::Plugins::Unit-Generator;
 use Ddt::Plugins::Deps;
 use Ddt::Plugins::Watch;
+use Ddt::Plugins::Dist;
