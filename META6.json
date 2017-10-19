@@ -14,6 +14,7 @@
     "License::Software",
     "META6",
     "Pod::To::Markdown",
+    "Shell::Command",
     "Test::META",
     "Zef",
     "Zef::Client",
@@ -42,6 +43,7 @@
     "Ddt::Distribution" : "lib/Ddt/Distribution.pm6",
     "Ddt::Plugins::Watch" : "lib/Ddt/Plugins/Watch.pm6",
     "Ddt::Plugins::Unit-Generator" : "lib/Ddt/Plugins/Unit-Generator.pm6",
+    "Ddt::Plugins::Dist" : "lib/Ddt/Plugins/Dist.pm6",
     "Ddt::CLI" : "lib/Ddt/CLI.pm6",
     "Ddt" : "lib/Ddt.pm6"
   },
