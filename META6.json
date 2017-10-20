@@ -14,12 +14,14 @@
     "License::Software",
     "META6",
     "Pod::To::Markdown",
+    "Shell::Command",
     "Test::META",
     "Zef",
     "Zef::Client",
     "Zef::Config",
     "Zef::Distribution",
-    "Zef::Identity"
+    "Zef::Identity",
+    "CPAN::Uploader::Tiny"
   ],
   "tags" : [
     "authoring",
@@ -42,10 +44,12 @@
     "Ddt::Distribution" : "lib/Ddt/Distribution.pm6",
     "Ddt::Plugins::Watch" : "lib/Ddt/Plugins/Watch.pm6",
     "Ddt::Plugins::Unit-Generator" : "lib/Ddt/Plugins/Unit-Generator.pm6",
+    "Ddt::Plugins::Dist" : "lib/Ddt/Plugins/Dist.pm6",
+    "Ddt::Plugins::Publish" : "lib/Ddt/Plugins/Publish.pm6",
     "Ddt::CLI" : "lib/Ddt/CLI.pm6",
     "Ddt" : "lib/Ddt.pm6"
   },
-  "version" : "0.4.1.1",
+  "version" : "0.4.2",
   "authors" : [
     "Shoichi Kaji",
     "Bahtiar `kalkin-` Gadimov",

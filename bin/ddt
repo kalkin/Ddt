@@ -4,3 +4,22 @@ use Ddt::CLI;
 use Ddt::Plugins::Unit-Generator;
 use Ddt::Plugins::Deps;
 use Ddt::Plugins::Watch;
+use Ddt::Plugins::Dist;
+use Ddt::Plugins::Publish;
+
+# use Pluggable;
+
+# INIT {
+#      my @plugins = plugins("Ddt");
+#      my @plnames = @plugins.map({ .^name });
+#
+#      say @plnames;
+#
+#      for @plugins -> $module
+#      {
+#          require ::($module.^name) <&MAIN>;
+#          warn "Failed to load Plugin <$module>!"
+#              if ::($module) ~~ Failure;
+#
+#      }
+#  }
