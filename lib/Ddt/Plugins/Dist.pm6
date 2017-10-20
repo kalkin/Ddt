@@ -1,9 +1,3 @@
-#
-# Plugin to create a distribution tarball
-# for CPAN
-#
-# Author: holli <holli.holzer@gmail.com>
-#
 
 use Ddt;
 use Ddt::Distribution;
@@ -12,7 +6,7 @@ use Shell::Command;
 
 module Ddt::Plugins::Dist
 {
-    #| Create a tarball for the distribution, --force to override errors
+    #| Create a tarball for the distribution, use the force to override errors
     multi MAIN( "dist", Bool :$force = False ) is export {
         my $ddt = Ddt::Distribution.new: TOPDIR;
         make-dist-tarball( $ddt, $force );
@@ -126,8 +120,8 @@ module Ddt::Plugins::Dist
         @problems.push( "You must specify at least one <author>" )
             unless $meta.authors.elems > 0;
 
-        @problems.push( "you can't specify empty strings as <author> or <authors>" )
-            if $meta.authors.grep(* ~~ "");
+        @problems.push( "you can't specify just empty strings as <author> or <authors>" )
+            if $meta.authors.all(* ~~ "");
 
         @problems.push( "you must specify an <author> (not only <authors>)" )
             unless Test::META::check-authors($meta);
@@ -217,3 +211,38 @@ module Ddt::Plugins::Dist
         return @files.grep( * ∉ @prune );
     }
 }
+
+=begin pod
+
+=head1 Ddt::Plugins::Dist
+
+Plugin to create a distribution tarball for CPAN
+
+=head1 Usage
+
+    root> ddt dist
+
+This will create a tarball for your project.
+
+If a MANIFEST file is present in the root of your project,
+it will be read and only the files listed in there will end
+up in the tarball.
+
+Otherwise the file list resulting from a C<git ls-files> command
+will be used.
+
+This list may be filtered by using a MANIFEST.SKIP file. If such a
+file is present, it will be read and files listed therein will not
+be part of the tarball.
+
+=head1 Author
+
+Markus «holli» Holzer <holli.holzer@gmail.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2015 Markus Holzer
+
+This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+
+=end pod
