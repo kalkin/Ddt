@@ -152,13 +152,13 @@ method render-markdown( $file )
 
 method find-pod-for( $module-file )
 {
-  my @candidates =
-    "README.pod6",
-    $module-file,
-    $module-file.subst( / \. pm6 $ /, '.pod6'),
-    $module-file.subst( / \. pm6 $ /, '.pod6').subst('lib', 'docs');
+    my @candidates =
+        "README.pod6",
+        $module-file,
+        $module-file.subst( / \. pm6 $ /, '.pod6'),
+        $module-file.subst( / \. pm6 $ /, '.pod6').subst('lib', 'docs');
 
-  return @candidates.grep({ .IO.e });
+    return @candidates.grep({ .IO.e });
 }
 
 
