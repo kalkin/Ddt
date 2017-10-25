@@ -120,21 +120,47 @@ method generate-META6 {
 
 method generate-README {
     my $module-file = self!name-to-file: $.main-comp-unit;
-    my @cmd = $*EXECUTABLE, "--doc=Markdown", "-I$.lib-dir", $module-file;
-    my $p = run(|@cmd, :out);
-    die "Failed @cmd[]" if $p.exitcode != 0;
-    my $markdown = $p.out.slurp-rest;
-    my ($user, $repo) = guess-user-and-repo();
-    my $header = do if $user and ".travis.yml".IO.e {
-        "[![Build Status](https://travis-ci.org/$user/$repo.svg?branch=master)]"
-            ~ "(https://travis-ci.org/$user/$repo)"
-            ~ "\n\n";
-    } else {
-        "";
+    my @pcandidates = self.find-pod-for( $module-file );
+
+    for @pcandidates -> $file
+    {
+        if my $markdown = self.render-markdown( $file )
+        {
+            my ($user, $repo) = guess-user-and-repo();
+            my $header = do if $user and ".travis.yml".IO.e {
+                "[![Build Status](https://travis-ci.org/$user/$repo.svg?branch=master)]"
+                    ~ "(https://travis-ci.org/$user/$repo)"
+                    ~ "\n\n";
+            } else {
+                "";
+            }
+
+            return $.main-dir.child("README.md").spurt: $header ~ $markdown;
+        }
     }
 
-    $.main-dir.child("README.md").spurt: $header ~ $markdown;
+    note "Could not find any pod for the README.md"
 }
+
+method render-markdown( $file )
+{
+    my @cmd = $*EXECUTABLE, "--doc=Markdown", "-I$.lib-dir", $file;
+    my $p = run(|@cmd, :out);
+    die "Failed @cmd[]" if $p.exitcode != 0;
+    return $p.out.slurp-rest;
+}
+
+method find-pod-for( $module-file )
+{
+    my @candidates =
+        "README.pod6",
+        $module-file.subst( / \. pm6 $ /, '.pod6'),
+        $module-file,
+        $module-file.subst( / \. pm6 $ /, '.pod6').subst('lib', 'docs');
+
+    return @candidates.grep({ .IO.e });
+}
+
 
 method !make-content {
     my $license = self!license;
