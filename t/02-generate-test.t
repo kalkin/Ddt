@@ -10,6 +10,6 @@ subtest "Generate a test file", {
     temp $*CWD = tempdir.IO;
     ddt "new", "Foo::Bar";
     chdir "Foo-Bar";
-    ok ddt('generate', 'test', 'foo'), "Generate test command exited succesful";
+    ok ddt('generate', 'test', 'foo').success, "Generate test command exited successful";
     ok <t/foo.t>.IO.e, "Test file was created";
 }
