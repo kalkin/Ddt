@@ -45,7 +45,7 @@
     "Ddt::CLI" : "lib/Ddt/CLI.pm6",
     "Ddt" : "lib/Ddt.pm6"
   },
-  "version" : "0.4.2",
+  "version" : "0.4.3",
   "authors" : [
     "Shoichi Kaji",
     "Bahtiar `kalkin-` Gadimov",
