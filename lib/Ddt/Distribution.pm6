@@ -10,6 +10,7 @@ sub all-files(IO::Path:D $dir, File::Ignore:D $rules) {
     my @todo = [$dir];
     gather while @todo {
         my IO::Path:D $d = shift @todo;
+        next unless $d.e;
         for $d.dir {
             when $rules.ignore-path: $_ { next }
             when .d { push @todo, $_}
