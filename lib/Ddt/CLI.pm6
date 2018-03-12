@@ -10,14 +10,13 @@ multi MAIN("new",
             :$license-name = 'GPLv3' #= License name
         ) is export
 {
-    my $distri-name = $module.subst: '::', '-', :g;
-    my $main-dir = $distri-name.IO;
+    my $main-dir = $module.subst: '::', '-', :g;
     die "Already exists $main-dir" if $main-dir.IO ~~ :d;
 
-    mkdir($main-dir);
+    mkdir $main-dir;
     my $license-holder = author() ~ " " ~ email();
     my $spdx = License::Software::get($license-name).new($license-holder).spdx;
-    my $meta = META6.new:   name => $distri-name,
+    my $meta = META6.new:   name => $module,
                             authors => [author()],
                             license => $spdx,
                             version => Version.new('0.0.1'),

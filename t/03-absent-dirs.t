@@ -8,7 +8,7 @@ plan 1;
 subtest "Handle project directory without a “bin/”", {
     plan 2;
     temp $*CWD = tempdir.IO;
-    ddt "new", "Foo::Bar";
+    ddt "new", "Foo-Bar";
     chdir "Foo-Bar";
     "bin".IO.rmdir if "bin".IO.e;
     is "bin".IO.e, False, "”bin/” removed";

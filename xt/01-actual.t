@@ -11,7 +11,7 @@ subtest "ddt new command", {
     temp $*CWD = tempdir.IO;
     nok ddt("new").success;
     nok ddt("unknown").success;
-    my $r = ddt '--license-name=Apache2', "new", "Foo::Bar";
+    my $r = ddt '--license-name=Apache2', "new", "Foo-Bar";
     unless $r.success {
         diag $r.out;
         diag $r.err;
@@ -27,7 +27,7 @@ subtest "ddt new command", {
         }
     }
     ok !"xt".IO.d, "By default no xt/ dir";
-    ok "lib/Foo/Bar.pm6".IO.e, "Unit file created";
+    ok "lib/Foo-Bar.pm6".IO.e, "Unit file created";
     ok ddt("test").success, "Tests passed";
 
     "t/01-fail.t".IO.spurt: q:to/EOF/;

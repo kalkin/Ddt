@@ -61,7 +61,7 @@ multi method new(IO::Path $meta-file) {
     self.bless: META6 => $meta,
                 meta-file => $meta-file,
                 main-dir => $meta-file.parent,
-                main-comp-unit => $meta.name.subst('-', '::', :g)
+                main-comp-unit => $meta.name
 }
 multi method new(Str $meta-file) { self.new($meta-file.IO) }
 
@@ -165,7 +165,7 @@ method find-pod-for( $module-file )
 
 method !make-content {
     my $license = self!license;
-    my $module = $.META6.name.subst: '-', '::', :g;
+    my $module = $.META6.name;
     my IO::Path $module-file = $.lib-dir;
 
     for $.main-comp-unit.split(<::>) { $module-file = $module-file.child: $_ };
@@ -252,7 +252,6 @@ method !to-file(Str $module) {
 }
 
 method !name-to-file(Str $module is copy) {
-    $module.subst('-', '::', :g);
     self!to-file: $module;
 }
 
