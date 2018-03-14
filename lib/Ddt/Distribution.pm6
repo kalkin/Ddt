@@ -114,7 +114,7 @@ method generate-META6 {
     $meta.provides = self.find-provides;
     $meta.source-url = find-source-url() unless $meta.source-url.defined;
     $meta.version = "*" unless $meta.source-url.defined;
-    $meta.license = self!license.spdx unless !$meta.license.defined;
+    $meta.license = self.license.spdx unless !$meta.license.defined;
 
     $.meta-file.IO.spurt: meta-to-json($meta);
 }
@@ -164,7 +164,7 @@ method find-pod-for( $module-file )
 
 
 method !make-content {
-    my $license = self!license;
+    my $license = self.license;
     my $module = $.META6.name;
     my IO::Path $module-file = $.lib-dir;
 
@@ -195,7 +195,7 @@ method !init-vcs-repo {
 }
 
 
-method !license of License::Software::Abstract {
+method license of License::Software::Abstract {
     License::Software::get($.META6.license).new: author() ~ " " ~ email();
 }
 
