@@ -9,8 +9,8 @@ sub generate(
     Unit:D $unit,           #= class, , role package, grammer or module
     Str:D $name is copy,    #= Unit name i.e Foo::Bar
     )  {
-    my $ddt = Ddt::Distribution.new: TOPDIR;
-    my Str:D $prefix = $ddt.META6<provides>.keys.sort[0];
+    my $dist = Ddt::Distribution.new: TOPDIR;
+    my Str:D $prefix = $dist.META6<provides>.keys.sort[0];
 
     $name = to-name $name, $prefix;
 
@@ -19,7 +19,9 @@ sub generate(
     my IO::Path:D $parent-dir = $path.dirname.IO;
     $parent-dir.mkdir;
 
-    spurt $path, "unit $unit $name;\n", :createonly;
+    my $header = $dist.license.header;
+    $header = "#`(\n" ~ $header ~ ")\n\n" if $header;
+    spurt $path, $header ~ "unit $unit $name;\n", :createonly;
 }
 
 #| Generate a class
