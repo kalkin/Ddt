@@ -1,16 +1,14 @@
 {
-  "name" : "Ddt",
-  "source-url" : "https://github.com/kalkin/Ddt.git",
-  "support" : {
-    "source" : null
-  },
-  "perl" : "6.c",
   "auth" : "kalkin",
+  "authors" : [
+    "Bahtiar `kalkin-` Gadimov",
+    "Shoichi Kaji"
+  ],
   "depends" : [
     "File::Find",
     "File::Ignore",
     "File::Temp",
-    "JSON::Pretty",
+    "JSON::Fast",
     "License::Software",
     "META6",
     "Pod::To::Markdown",
@@ -21,6 +19,25 @@
     "Zef::Distribution",
     "Zef::Identity"
   ],
+  "description" : "Distribution Development Tool",
+  "license" : "Artistic-2.0",
+  "meta-version" : "0",
+  "name" : "Ddt",
+  "perl" : "6.c",
+  "provides" : {
+    "Ddt" : "lib/Ddt.pm6",
+    "Ddt::CLI" : "lib/Ddt/CLI.pm6",
+    "Ddt::Distribution" : "lib/Ddt/Distribution.pm6",
+    "Ddt::JSON" : "lib/Ddt/JSON.pm6",
+    "Ddt::Plugins::Deps" : "lib/Ddt/Plugins/Deps.pm6",
+    "Ddt::Plugins::Unit-Generator" : "lib/Ddt/Plugins/Unit-Generator.pm6",
+    "Ddt::Plugins::Watch" : "lib/Ddt/Plugins/Watch.pm6",
+    "Ddt::Template" : "lib/Ddt/Template.pm6"
+  },
+  "source-url" : "https://github.com/kalkin/Ddt.git",
+  "support" : {
+    "source" : null
+  },
   "tags" : [
     "authoring",
     "command line",
@@ -31,26 +48,9 @@
     "testing",
     "utility"
   ],
-  "license" : "Artistic-2.0",
   "test-depends" : [
     "File::Temp",
     "Test::META"
   ],
-  "provides" : {
-    "Ddt::Template" : "lib/Ddt/Template.pm6",
-    "Ddt::Plugins::Deps" : "lib/Ddt/Plugins/Deps.pm6",
-    "Ddt::Distribution" : "lib/Ddt/Distribution.pm6",
-    "Ddt::Plugins::Watch" : "lib/Ddt/Plugins/Watch.pm6",
-    "Ddt::Plugins::Unit-Generator" : "lib/Ddt/Plugins/Unit-Generator.pm6",
-    "Ddt::CLI" : "lib/Ddt/CLI.pm6",
-    "Ddt" : "lib/Ddt.pm6"
-  },
-  "version" : "0.5.2",
-  "authors" : [
-    "Shoichi Kaji",
-    "Bahtiar `kalkin-` Gadimov",
-    ""
-  ],
-  "description" : "Distribution Development Tool",
-  "meta6" : "0"
+  "version" : "0.5.2"
 }

@@ -1,5 +1,5 @@
 use META6;
-use JSON::Pretty;
+use JSON::Fast;
 use Ddt::JSON;
 use File::Find;
 use License::Software;
