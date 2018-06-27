@@ -125,7 +125,10 @@ multi MAIN("hack", Str:D $identity, Str $dir?) is export {
     }
 
     my Str:D $target = ($dir || cand-name @candidates.first);
-    die "Directory $target already exists" if $target.IO.e;
+    if $target.IO.e {
+        note "Directory $target already exists";
+        exit 1;
+    }
 
     my Str $uri;
     unless @candidates.first.dist.source-url {
