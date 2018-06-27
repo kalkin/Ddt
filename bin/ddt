@@ -1,6 +1,7 @@
 #!/usr/bin/env perl6
 use v6;
 use Ddt::CLI;
+use Ddt::Plugins::Check;
 use Ddt::Plugins::Unit-Generator;
 use Ddt::Plugins::Deps;
 use Ddt::Plugins::Watch;
