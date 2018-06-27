@@ -114,13 +114,16 @@ sub cand-name($candi) of Str:D {
 
 #| Checkout a Distribution and start hacking on it
 multi MAIN("hack", Str:D $identity, Str $dir?) is export {
-
     if !$dir.defined && TOPDIR().defined {
         die "You are already in a repository please specify exact dir to clone to"
     }
 
     my @candidates = search-unit($identity);
-    die "No candidates found" unless @candidates.elems;
+    unless @candidates {
+        note "No candidates found";
+        exit 1;
+    }
+
     my Str:D $target = ($dir || cand-name @candidates.first);
     die "Directory $target already exists" if $target.IO.e;
 
