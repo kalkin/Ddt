@@ -11,7 +11,10 @@ multi MAIN("new",
         ) is export
 {
     my $main-dir = $module.subst: '::', '-', :g;
-    die "Already exists $main-dir" if $main-dir.IO ~~ :d;
+    if $main-dir.IO ~~ :d {
+        note "Already exists $main-dir";
+        exit 1;
+    }
 
     mkdir $main-dir;
     my $license-holder = author() ~ " " ~ email();
@@ -85,7 +88,10 @@ multi MAIN("release") is export
     my ($user, $repo) = guess-user-and-repo($ddt.META6<source-url>);
     my Str:D $meta-file = $ddt.meta-file.basename;
     my Str:D $module = $ddt.name;
-    die "Cannot find user and repository settting" unless $repo;
+    unless $repo {
+        note "Cannot find user and repository settting";
+        exit 1;
+    }
     say  qq:to/EOF/;
     Are you ready to release your module? Congrats!
     For this, follow these steps:
@@ -115,7 +121,8 @@ sub cand-name($candi) of Str:D {
 #| Checkout a Distribution and start hacking on it
 multi MAIN("hack", Str:D $identity, Str $dir?) is export {
     if !$dir.defined && TOPDIR().defined {
-        die "You are already in a repository please specify exact dir to clone to"
+        note "You are already in a repository please specify exact dir to clone to";
+        exit 1;
     }
 
     my @candidates = search-unit($identity);
