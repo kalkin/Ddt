@@ -66,6 +66,7 @@ sub print-diff(@a, @b, $prefix) {
 }
 
 sub all-deps(Ddt::Distribution:D $ddt, *@paths where { $_.all ~~ IO::Path:D }) {
+    my %own-units = $ddt.find-provides;
     @paths  ==> map *.files()
             ==> flat()
             ==> map *.lines
@@ -79,7 +80,7 @@ sub all-deps(Ddt::Distribution:D $ddt, *@paths where { $_.all ~~ IO::Path:D }) {
             ==> unique()
             ==> grep !*.contains: '$'
             ==> grep none <nqp v6 Test>
-            ==> grep * ∉ $ddt.find-provides
+            ==> grep * ∉ %own-units.keys
             ==> sort()
             ==> my @imports;
 
