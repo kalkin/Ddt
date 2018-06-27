@@ -136,7 +136,7 @@ multi MAIN("hack", Str:D $identity, Str $dir?) is export {
 
     my $candi = @local.first;
     my IO::Path:D $local-mirror = local-mirror $uri;
-    say qqx{git clone $uri --reference $local-mirror.Str() $target};
+    say qqx{git clone $uri --reference-if-able $local-mirror.Str() $target};
     say "Checked out $uri to $target";
     say "You can now do `cd $target`";
 }
