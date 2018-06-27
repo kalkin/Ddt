@@ -102,11 +102,14 @@ multi MAIN("release") is export
 }
 
 sub cand-name($candi) of Str:D {
-    my Str:D $name = $candi.dist.source-url.IO.basename;
-    if $name.IO.extension eq 'git' {
-        $name = $name.comb[0..*-5].join;
+    if $candi.dist.source-url {
+        my Str:D $name = $candi.dist.source-url.IO.basename;
+        if $name.IO.extension eq 'git' {
+            $name = $name.comb[0..*-5].join;
+        }
+        return $name;
     }
-    return $name;
+    return $candi.dist.name.subst('::', '-', :g);
 }
 
 #| Checkout a Distribution and start hacking on it
