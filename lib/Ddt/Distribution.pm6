@@ -1,5 +1,6 @@
 use META6;
 use JSON::Pretty;
+use Ddt::JSON;
 use File::Find;
 use License::Software;
 use Ddt::Template;
@@ -268,7 +269,9 @@ sub guess-user-and-repo() {
         return;
     }
 }
+
+# A hack for getting identical json on each run
 sub meta-to-json(META6 $meta --> Str:D) {
     my %h = from-json($meta.to-json: :skip-null).pairs.grep: *.value !~~ Empty;
-    to-json(%h);
+    to-sorted-json(%h);
 }
