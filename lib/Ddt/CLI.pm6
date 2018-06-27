@@ -135,6 +135,10 @@ multi MAIN("hack", Str:D $identity, Str $dir?) is export {
 
     $uri = @candidates.first.dist.source-url;
 
+    if $uri ~~ /^.*\.(tar\.gz|tar\.bz2|tar)$/ {
+        note "Only found an archive url " ~ $uri;
+        exit 1;
+    }
 
     my (:@remote, :@local) := @candidates.classify: {.dist !~~ Zef::Distribution::Local ?? <remote> !! <local>}
     unless @local.first {
