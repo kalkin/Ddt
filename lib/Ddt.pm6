@@ -105,10 +105,11 @@ sub local-mirror($uri) of IO::Path:D is export {
 
 =SYNOPSIS
 
-  > ddt --license-name=LGPL new Foo::Bar # create Foo-Bar distribution
-  > cd Foo-Bar
-  > ddt build        # build the distribution and re-generate README.md & META6.json
-  > ddt -C test      # Run tests when files change
+  $ ddt --license-name=LGPL new Foo::Bar # create Foo-Bar distribution
+  $ cd Foo-Bar
+  $ ddt build        # build the distribution and re-generate
+                     # README.md & META6.json
+  $ ddt -C test      # Run tests when files change
 
 =DESCRIPTION
 
@@ -123,10 +124,12 @@ which can be considered stable up to the C<v1.0> is the command line interface.
 =USAGE
 
   ddt [--license-name=«NAME»] new <module> -- Create new module
-  ddt build                                -- Build the distribution & README.md
+  ddt build                                -- Build the distribution and
+                                              update README.md
   ddt [-C|--continues] test [<tests> …]    -- Run distribution tests
   ddt release                              -- Make release
-  ddt hack <identity> [<dir>]              -- Checkout a Distribution and start hacking on it
+  ddt hack <identity> [<dir>]              -- Checkout a Distribution and
+                                              start hacking on it
   ddt generate class <name>                -- Generate a class
   ddt generate role <name>                 -- Generate a role
   ddt generate package <name>              -- Generate a package
@@ -135,8 +138,9 @@ which can be considered stable up to the C<v1.0> is the command line interface.
   ddt generate test <name> [<description>] -- Generate stub test file
   ddt [-v] deps distri                     -- Show all the modules used
   ddt [-u|--update] deps                   -- Update META6.json dependencies
-  ddt watch [<cmd>…]                       -- Watch lib/, bin/ & t/ for changes respecting .gitignore and execute given cmd
-
+  ddt watch [<cmd>…]                       -- Watch lib/, bin/ & t/ for
+                                              changes respecting .gitignore
+                                              and execute given cmd
 
 =head1 INSTALLATION
 
