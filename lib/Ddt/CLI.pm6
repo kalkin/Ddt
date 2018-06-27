@@ -127,7 +127,14 @@ multi MAIN("hack", Str:D $identity, Str $dir?) is export {
     my Str:D $target = ($dir || cand-name @candidates.first);
     die "Directory $target already exists" if $target.IO.e;
 
-    my Str:D $uri = @candidates.first.dist.source-url;
+    my Str $uri;
+    unless @candidates.first.dist.source-url {
+        note "The project has no source url";
+        exit 1;
+    }
+
+    $uri = @candidates.first.dist.source-url;
+
 
     my (:@remote, :@local) := @candidates.classify: {.dist !~~ Zef::Distribution::Local ?? <remote> !! <local>}
     unless @local.first {
