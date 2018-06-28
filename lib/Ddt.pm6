@@ -130,8 +130,6 @@ which can be considered stable up to the C<v1.0> is the command line interface.
   ddt release                              -- Make release
   ddt hack <identity> [<dir>]              -- Checkout a Distribution and
                                               start hacking on it
-  ddt check                                -- Check META6.json file for common
-                                              errors
   ddt generate class <name>                -- Generate a class
   ddt generate role <name>                 -- Generate a role
   ddt generate package <name>              -- Generate a package

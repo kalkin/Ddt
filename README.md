@@ -40,8 +40,6 @@ USAGE
     ddt release                              -- Make release
     ddt hack <identity> [<dir>]              -- Checkout a Distribution and
                                                 start hacking on it
-    ddt check                                -- Check META6.json file for common
-                                                errors
     ddt generate class <name>                -- Generate a class
     ddt generate role <name>                 -- Generate a role
     ddt generate package <name>              -- Generate a package
