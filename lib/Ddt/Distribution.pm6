@@ -146,6 +146,10 @@ method generate-README {
 
 method render-markdown( $file )
 {
+    if False {
+        # Hack for ddt deps command
+        use Pod::To::Markdown;
+    }
     my @cmd = $*EXECUTABLE, "--doc=Markdown", "-I$.lib-dir", $file;
     my $p = run(|@cmd, :out);
     die "Failed @cmd[]" if $p.exitcode != 0;
