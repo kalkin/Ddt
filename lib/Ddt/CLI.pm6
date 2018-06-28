@@ -1,5 +1,6 @@
 use Ddt;
 use Ddt::Distribution;
+use Ddt::Unit;
 use License::Software;
 use Zef::Distribution;
 use META6;
@@ -125,7 +126,7 @@ multi MAIN("hack", Str:D $identity, Str $dir?) is export {
         exit 1;
     }
 
-    my @candidates = search-unit($identity);
+    my @candidates = unit-search($identity);
     unless @candidates {
         note "No candidates found";
         exit 1;

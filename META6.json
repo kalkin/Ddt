@@ -32,7 +32,8 @@
     "Ddt::Plugins::Deps" : "lib/Ddt/Plugins/Deps.pm6",
     "Ddt::Plugins::Unit-Generator" : "lib/Ddt/Plugins/Unit-Generator.pm6",
     "Ddt::Plugins::Watch" : "lib/Ddt/Plugins/Watch.pm6",
-    "Ddt::Template" : "lib/Ddt/Template.pm6"
+    "Ddt::Template" : "lib/Ddt/Template.pm6",
+    "Ddt::Unit" : "lib/Ddt/Unit.pm6"
   },
   "source-url" : "https://github.com/kalkin/Ddt.git",
   "support" : {

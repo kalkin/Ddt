@@ -1,5 +1,6 @@
 use Ddt;
 use Ddt::Distribution;
+use Ddt::Unit;
 unit module Ddt::Plugins::Deps;
 
 #| Show all the modules used (HACK!)
@@ -12,7 +13,7 @@ multi MAIN('deps', 'distri', Bool:D :v($verbose) = False) is export {
     note "Searching distributions providing {@imports.join: ', '}.";
     note "This may take a few seconds";
 
-    my @candidates = search-unit(@imports);
+    my @candidates = unit-search(@imports);
     my %result;
     for @candidates {
         my $dist = $_.dist;
