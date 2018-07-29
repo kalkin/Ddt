@@ -5,4 +5,5 @@ use Ddt::Plugins::Build;
 use Ddt::Plugins::Unit-Generator;
 use Ddt::Plugins::Deps;
 use Ddt::Plugins::New;
+use Ddt::Plugins::Test;
 use Ddt::Plugins::Watch;
