@@ -28,6 +28,9 @@ sub name-to-file(Str:D $name) of Str:D is export {
 sub author is export { qx{git config  user.name}.chomp }
 sub email is export { qx{git config user.email}.chomp }
 sub TOPDIR of IO::Path:D is export {
+    if $*CWD ~ '/META6.json'.IO.e {
+        return $*CWD;
+    }
     my Proc:D $proc = Proc.new(:out, :err);
     $proc.shell: 'git rev-parse --show-toplevel';
     my $dir = $proc.out.slurp-rest;
