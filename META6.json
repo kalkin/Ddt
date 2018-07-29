@@ -29,6 +29,7 @@
     "Ddt::CLI" : "lib/Ddt/CLI.pm6",
     "Ddt::Distribution" : "lib/Ddt/Distribution.pm6",
     "Ddt::JSON" : "lib/Ddt/JSON.pm6",
+    "Ddt::Plugins::Build" : "lib/Ddt/Plugins/Build.pm6",
     "Ddt::Plugins::Deps" : "lib/Ddt/Plugins/Deps.pm6",
     "Ddt::Plugins::New" : "lib/Ddt/Plugins/New.pm6",
     "Ddt::Plugins::Unit-Generator" : "lib/Ddt/Plugins/Unit-Generator.pm6",
@@ -53,5 +54,5 @@
     "File::Temp",
     "Test::META"
   ],
-  "version" : "0.5.4"
+  "version" : "0.5.5"
 }
