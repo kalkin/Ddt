@@ -3,6 +3,7 @@ use v6;
 use Ddt::CLI;
 use Ddt::Plugins::Build;
 use Ddt::Plugins::Unit-Generator;
+use Ddt::Plugins::Hack;
 use Ddt::Plugins::Deps;
 use Ddt::Plugins::New;
 use Ddt::Plugins::Test;
