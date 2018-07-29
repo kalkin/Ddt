@@ -31,6 +31,7 @@
     "Ddt::JSON" : "lib/Ddt/JSON.pm6",
     "Ddt::Plugins::Build" : "lib/Ddt/Plugins/Build.pm6",
     "Ddt::Plugins::Deps" : "lib/Ddt/Plugins/Deps.pm6",
+    "Ddt::Plugins::Hack" : "lib/Ddt/Plugins/Hack.pm6",
     "Ddt::Plugins::New" : "lib/Ddt/Plugins/New.pm6",
     "Ddt::Plugins::Test" : "lib/Ddt/Plugins/Test.pm6",
     "Ddt::Plugins::Unit-Generator" : "lib/Ddt/Plugins/Unit-Generator.pm6",
