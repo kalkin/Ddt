@@ -2,7 +2,7 @@ use v6;
 use Test;
 use File::Temp;
 use Ddt :TEST;
-use JSON::Pretty;
+use JSON::Fast;
 
 plan 2;
 
