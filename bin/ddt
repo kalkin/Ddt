@@ -1,10 +1,10 @@
 #!/usr/bin/env perl6
 use v6;
-use Ddt::CLI;
 use Ddt::Plugins::Build;
 use Ddt::Plugins::Unit-Generator;
 use Ddt::Plugins::Hack;
 use Ddt::Plugins::Deps;
 use Ddt::Plugins::New;
+use Ddt::Plugins::Release;
 use Ddt::Plugins::Test;
 use Ddt::Plugins::Watch;
