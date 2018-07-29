@@ -3,16 +3,6 @@ use Ddt::Distribution;
 use Zef::Distribution;
 use META6;
 
-#| Build the module in current directory
-multi MAIN("build") is export 
-{
-    my $ddt = Ddt::Distribution.new: TOPDIR;
-    $ddt.generate-README;
-    $ddt.generate-META6;
-    return unless "Build.pm".IO.e;
-    run "zef", "build", ".";
-}
-
 #| Run distribution tests
 multi MAIN("test",
             Str  :$state,       #= Control prove's persistent state
