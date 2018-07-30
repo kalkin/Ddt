@@ -1,6 +1,6 @@
 use Ddt;
 use Ddt::Distribution;
-use License::Software;
+use License::Software:ver<0.2.0>;
 use Zef::Distribution;
 use META6;
 
@@ -18,7 +18,7 @@ multi MAIN("new",
 
     mkdir $main-dir;
     my $license-holder = author() ~ " " ~ email();
-    my $spdx = License::Software::get($license-name).new($license-holder).spdx;
+    my $spdx = license($license-name).new($license-holder).spdx;
     my $meta = META6.new:   name => $module,
                             authors => [author()],
                             license => $spdx,
