@@ -2,7 +2,7 @@ use META6;
 use JSON::Fast;
 use Ddt::JSON;
 use File::Find;
-use License::Software;
+use License::Software:ver<0.2.0>;
 use Ddt::Template;
 use File::Ignore;
 unit class Ddt::Distribution;
@@ -201,7 +201,7 @@ method !init-vcs-repo {
 
 
 method license of License::Software::Abstract {
-    License::Software::get($.META6.license).new: author() ~ " " ~ email();
+    license($.META6.license).new: author() ~ " " ~ email();
 }
 
 method find-provides {

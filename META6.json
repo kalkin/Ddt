@@ -9,7 +9,7 @@
     "File::Ignore",
     "File::Temp",
     "JSON::Fast",
-    "License::Software",
+    "License::Software:ver<0.2.0>",
     "META6",
     "Pod::To::Markdown",
     "Test::META",
@@ -52,5 +52,5 @@
     "File::Temp",
     "Test::META"
   ],
-  "version" : "0.5.3"
+  "version" : "0.5.4"
 }
