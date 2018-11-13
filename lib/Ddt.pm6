@@ -178,7 +178,7 @@ Use C<ddt -u deps>
 
 =item Where is the spec of META6.json?
 
-Maybe https://github.com/perl6/ecosystem/blob/master/spec.pod or http://design.perl6.org/S22.html
+Maybe L<https://github.com/perl6/ecosystem/blob/master/spec.pod> or L<http://design.perl6.org/S22.html>
 
 =item How do I remove the travis badge?
 
