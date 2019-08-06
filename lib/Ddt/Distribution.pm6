@@ -241,7 +241,9 @@ sub find-source-url() {
     } elsif $url ~~ m/'ssh://git@' $<rest>=[.+] / {
         $url = "git://$<rest>";
     }
-    $url;
+    if $url.starts-with('git://github.com/') && !$url.ends-with('.git') {
+        $url ~= '.git';
+    }
 }
 
 method !to-module(IO::Path $file where *.f) {
