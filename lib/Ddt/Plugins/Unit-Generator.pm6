@@ -19,9 +19,14 @@ sub generate(
     my IO::Path:D $parent-dir = $path.dirname.IO;
     $parent-dir.mkdir;
 
-    my $header = $dist.license.header;
-    $header = "#`(\n" ~ $header ~ ")\n\n" if $header;
-    spurt $path, $header ~ "unit $unit $name;\n", :createonly;
+    my $license = $dist.license;
+    if $license {
+        my $header = $license.header;
+        $header = "#`(\n" ~ $header ~ ")\n\n" if $header;
+        spurt $path, $header ~ "unit $unit $name;\n", :createonly;
+    } else {
+        spurt $path, "unit $unit $name;\n", :createonly;
+    }
 }
 
 #| Generate a class
