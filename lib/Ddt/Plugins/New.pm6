@@ -2,7 +2,7 @@ use Ddt;
 use Ddt::Distribution;
 
 use META6;
-use License::Software:ver<0.2.0>;
+use License::Software:ver<0.3.0>;
 
 unit module Ddt::Plugins::New;
 
