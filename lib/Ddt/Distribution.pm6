@@ -249,16 +249,7 @@ sub find-source-url() {
         }
     }
     return "" unless $url;
-    $url .= Str;
-    $url ~~ s/^https?/git/; # panda does not support http protocol
-    if $url ~~ m/'git@' $<host>=[.+] ':' $<repo>=[<-[:]>+] $/ {
-        $url = "git://$<host>/$<repo>";
-    } elsif $url ~~ m/'ssh://git@' $<rest>=[.+] / {
-        $url = "git://$<rest>";
-    }
-    if $url.starts-with('git://github.com/') && !$url.ends-with('.git') {
-        $url ~= '.git';
-    }
+    return $url;
 }
 
 method !to-module(IO::Path $file where *.f) {
