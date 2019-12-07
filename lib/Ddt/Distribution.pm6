@@ -90,8 +90,14 @@ method generate-all(:$force?) {
     self!make-content;
     self.generate-META6;
     self.generate-README;
-    self!init-vcs-repo;
+    self!init-vcs-repo unless in-git-repo;
 }
+
+sub in-git-repo returns Bool:D {
+    my $proc = shell 'git rev-parse --git-dir 2>/dev/null';
+    return $proc.exitcode == 0
+}
+
 
 method !make-directories {
     $.main-dir.mkdir;
