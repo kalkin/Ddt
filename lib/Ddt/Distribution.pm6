@@ -223,6 +223,21 @@ sub find-description($module-file) {
         return "";
     }
 }
+
+# Normalizes the url output by git-remote(1). Transforms ssh git urls of the
+# form git@example.com:asd/foo to ssh://git@example.com/asd/foo
+submethod normalize-url(Str:D $url --> Str:D) {
+    return $url if $url ~~ m/\w+'://'.+/;
+    given $url {
+        when m/^($<user>=[.+]'@')?$<host>=[.+]':'$<repo>=[.+]$/ {
+            return "ssh://{$0<user>}@$<host>/$<repo>" if $[0].defined;
+            return "ssh://$<host>/$<repo>"
+        }
+        when "" { return "" }
+    }
+    die "Strange url “$url”. Skipping it";
+}
+
 sub find-source-url() {
     try my @line = qx{git remote -v 2>/dev/null};
     return "" unless @line;
