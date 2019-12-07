@@ -113,9 +113,14 @@ method generate-META6 {
     }
     $meta.description = find-description(self!name-to-file: $.main-comp-unit) || $meta.description;
     $meta.provides = self.find-provides;
-    $meta.source-url = find-source-url() unless $meta.source-url.defined;
+    $meta.source-url = self.find-source-url() unless $meta.source-url.defined;
     $meta.version = "*" unless $meta.source-url.defined;
     $meta.license = self.license.spdx unless !$meta.license.defined;
+
+    CATCH {
+        note .message;
+        .resume;
+    }
 
     $.meta-file.IO.spurt: meta-to-json($meta);
 }
@@ -128,7 +133,7 @@ method generate-README {
     {
         if my $markdown = self.render-markdown( $file )
         {
-            my ($user, $repo) = guess-user-and-repo();
+            my ($user, $repo) = self.guess-user-and-repo();
             my $header = do if $user and ".travis.yml".IO.e {
                 "[![Build Status](https://travis-ci.org/$user/$repo.svg?branch=master)]"
                     ~ "(https://travis-ci.org/$user/$repo)"
@@ -238,18 +243,17 @@ submethod normalize-url(Str:D $url --> Str:D) {
     die "Strange url “$url”. Skipping it";
 }
 
-sub find-source-url() {
+sub git-remote-url( --> Str) {
     try my @line = qx{git remote -v 2>/dev/null};
     return "" unless @line;
-    my $url = gather for @line -> $line {
+    for @line -> $line {
         my ($, $url) = $line.split(/\s+/);
-        if $url {
-            take $url;
-            last;
-        }
+        return $url.Str.trim if $url;
     }
-    return "" unless $url;
-    return $url;
+}
+
+submethod find-source-url( --> Str:D ) {
+    return self.normalize-url: git-remote-url() || "";
 }
 
 method !to-module(IO::Path $file where *.f) {
@@ -268,8 +272,8 @@ method !name-to-file(Str $module is copy) {
     self!to-file: $module;
 }
 
-sub guess-user-and-repo() {
-    my $url = find-source-url();
+submethod guess-user-and-repo() {
+    my $url = self.find-source-url();
     return if $url eq "";
     if $url ~~ m{ (git|https?) '://'
         [<-[/]>+] '/'
