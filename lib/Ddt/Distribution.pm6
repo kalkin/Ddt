@@ -45,6 +45,7 @@ has IO::Path $.bin-dir       =  enhance-io-path-class $!main-dir.child(<bin>), $
 has IO::Path $.hooks-dir     =  $!main-dir.child(<hooks>);
 has IO::Path $.lib-dir       =  enhance-io-path-class $!main-dir.child(<lib>), $!ignore-rules;
 has IO::Path $.test-dir      =  enhance-io-path-class $!main-dir.child(<t>), $!ignore-rules;
+has IO::Path $.extra-test-dir=  enhance-io-path-class $!main-dir.child(<xt>), $!ignore-rules;
 
 sub find-meta-file(IO::Path:D $top-dir where *.d) of IO::Path:D {
     my IO::Path:D @candidates = $top-dir.child(<META6.json>),
@@ -71,7 +72,7 @@ method name of Str:D { return $.META6<name>; }
 method watch {
     my Supplier $supplier .= new;
     my $rules = $.ignore-rules;
-    my @dirs = [$.lib-dir, $.test-dir, $.bin-dir];
+    my @dirs = [$.lib-dir, $.test-dir, $.extra-test-dir, $.bin-dir];
     while @dirs {
         my $d = shift @dirs;
         next if !$d.e;
