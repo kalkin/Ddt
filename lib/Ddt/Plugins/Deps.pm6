@@ -26,7 +26,7 @@ multi MAIN('deps', 'distri', Bool:D :v($verbose) = False) is export {
     if $verbose {
         for %result.kv -> $name, @deps {
             say $name, @deps.elems ?? ":" !! "";
-            for @deps -> $d { say "\t$d" }
+            for @deps -> $d { say "	$d" }
         }
     } else {
         for %result.keys.sort { .say };
@@ -79,7 +79,7 @@ sub all-deps(Ddt::Distribution:D $ddt, *@paths where { $_.all ~~ IO::Path:D }) {
             ==> map({ $_[0].Str })
             ==> unique()
             ==> grep !*.contains: '$'
-            ==> grep none <nqp v6 Test>
+            ==> grep none <nqp v6 Test v6.c v6.d v6.e v6.f>
             ==> grep * ∉ %own-units.keys
             ==> sort()
             ==> my @imports;

@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - `xt/` directory to list of watched directories
 
+### Fixed
+
+- deps plugin ignore `v6.c`, `v6.d` & ect… deps
+
 ## v0.5.7 - 2019-12-07
 
 ### Added
