@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - `xt/` directory to list of watched directories
+- license header to generated test files
 
 ### Fixed
 

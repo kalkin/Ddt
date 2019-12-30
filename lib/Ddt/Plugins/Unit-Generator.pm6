@@ -69,6 +69,8 @@ multi MAIN("generate", "test",
     Str:D $name is copy #=(Test name),
     Str $description? #=(Test description),
     Bool :f(:$force) = False) {
+    my $dist = Ddt::Distribution.new: TOPDIR;
+
     $name ~= '.t';
     my IO::Path:D $test-dir = TOPDIR.child(<t>);
     my IO::Path:D $new-test = $test-dir.child($name);
@@ -76,9 +78,12 @@ multi MAIN("generate", "test",
         note "A test named $name already exists in dir t/";
         exit -1;
     }
+    my $license = $dist.license.?header;
+    $license = "#`(\n" ~ $license ~ ')' with $license;
     with $description {
         spurt $new-test, qq:to/END/;
         use v6;
+        $license
         use Test;
         plan 1;
 
@@ -89,6 +94,7 @@ multi MAIN("generate", "test",
     } else {
         spurt $new-test, qq:to/END/;
         use v6;
+        $license
         use Test;
         plan 1;
 
