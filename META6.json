@@ -56,5 +56,5 @@
     "File::Temp",
     "Test::META"
   ],
-  "version" : "0.5.7+1577708451"
+  "version" : "0.5.8"
 }
