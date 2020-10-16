@@ -2,7 +2,7 @@ use META6;
 use JSON::Fast;
 use Ddt::JSON;
 use File::Find;
-use License::Software:ver<0.3.0>;
+use License::Software:ver<0.3.*>;
 use Ddt::Template;
 use File::Ignore;
 unit class Ddt::Distribution;
