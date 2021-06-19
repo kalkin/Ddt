@@ -37,11 +37,11 @@ multi MAIN('deps', 'distri', Bool:D :v($verbose) = False) is export {
 multi MAIN('deps', Bool:D :u(:$update) = False) is export {
     my $ddt = Ddt::Distribution.new: TOPDIR;
     my @depends = all-deps $ddt, $ddt.bin-dir, $ddt.lib-dir;
-    print-diff($ddt.META6.depends, @depends, "D");
+    print-diff($ddt.META6.depends, @depends, "D") if @depends;
 
     my @test-depends = all-deps $ddt, $ddt.test-dir;
 
-    print-diff($ddt.META6.test-depends, @test-depends, "T");
+    print-diff($ddt.META6.test-depends, @test-depends, "T") if @test-depends;
 
     if $update {
         $ddt.META6.depends = @depends;
