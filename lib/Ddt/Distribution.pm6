@@ -172,9 +172,9 @@ method find-pod-for( $module-file )
 {
     my @candidates =
         "README.pod6",
-        $module-file.subst( / \. pm6 $ /, '.pod6'),
+        $module-file.subst( / \. raku $ /, '.pod6'),
         $module-file,
-        $module-file.subst( / \. pm6 $ /, '.pod6').subst('lib', 'docs');
+        $module-file.subst( / \. raku $ /, '.pod6').subst('lib', 'docs');
 
     return @candidates.grep({ .IO.e });
 }
@@ -186,7 +186,7 @@ method !make-content {
     my IO::Path $module-file = $.lib-dir;
 
     for $.main-comp-unit.split(<::>) { $module-file = $module-file.child: $_ };
-    $module-file = IO::Path.new: $module-file.Str ~ ".pm6";
+    $module-file = IO::Path.new: $module-file.Str ~ ".raku";
     $module-file.parent.mkdir;
 
     my %content = Ddt::Template::template($module, $license, $.relaxed-name);
@@ -217,7 +217,7 @@ method license of License::Software::Abstract {
 }
 
 method find-provides {
-    find dir => $!lib-dir, name => /\.pm6?$/
+    find dir => $!lib-dir, name => /\.raku?$/
         ==> map { self!to-module($_) => $_.relative($.main-dir) } ==> sort;
 }
 
@@ -265,13 +265,13 @@ submethod find-source-url( --> Str:D ) {
 
 method !to-module(IO::Path $file where *.f) {
     my $dir-sep = $file.SPEC.dir-sep;
-    $file.relative($.lib-dir).subst($dir-sep, <::>, :g).subst(/\.pm6?$/, '');
+    $file.relative($.lib-dir).subst($dir-sep, <::>, :g).subst(/\.raku?$/, '');
 };
 
 
 method !to-file(Str $module) {
     my $dir-sep = $.lib-dir.SPEC.dir-sep;
-    my $file = $module.subst('::', $dir-sep, :g).join ~ ".pm6";
+    my $file = $module.subst('::', $dir-sep, :g).join ~ ".raku";
     return $.lib-dir.child($file);
 }
 
