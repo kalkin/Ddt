@@ -111,7 +111,7 @@ method !make-directories {
 method generate-META6 {
     my $meta = $.META6;
 
-    $meta.perl-version = $*PERL.version unless $meta.perl-version.defined;
+    $meta.raku-version = $*RAKU.version unless $meta.raku-version.defined;
     if $meta.authors ~~ Empty || author() ∉ $meta.authors {
         $meta.authors.push: author()
     }
