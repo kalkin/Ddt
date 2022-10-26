@@ -27,7 +27,7 @@ subtest "ddt new command", {
         }
     }
     ok !"xt".IO.d, "By default no xt/ dir";
-    ok "lib/Foo-Bar.pm6".IO.e, "Unit file created";
+    ok "lib/Foo-Bar.rakumod".IO.e, "Unit file created";
     ok ddt("test").success, "Tests passed";
 
     "t/01-fail.t".IO.spurt: q:to/EOF/;
@@ -45,7 +45,7 @@ subtest "META6 description", {
     chdir "Hello";
     my $meta = from-json( "META6.json".IO.slurp );
     is $meta<description>, "blah blah blah", "Default generated description";
-    "lib/Hello.pm6".IO.spurt: q:to/EOF/;
+    "lib/Hello.rakumod".IO.spurt: q:to/EOF/;
     use v6;
     unit module Hello;
 

@@ -17,7 +17,7 @@ multi MAIN("release") is export
     Are you ready to release your module? Congrats!
     For this, follow these steps:
 
-    1. Fork https://github.com/perl6/ecosystem repository.
+    1. Fork https://github.com/Raku/ecosystem repository.
     2. Add https://raw.githubusercontent.com/$user/$repo/master/$meta-file to META.list.
     3. And raise a pull request!
 

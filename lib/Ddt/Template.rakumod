@@ -27,12 +27,12 @@ travis => qq:to/EOF/,
 os:
   - linux
   - osx
-language: perl6
-perl6:
+language: raku
+raku:
   - latest
 install:
-  - rakudobrew build zef
-  - zef --/test --depsonly install .
+  - rakubrew build-zef
+  - zef --/test --deps-only install .
 script:
   - zef test .
 sudo: false

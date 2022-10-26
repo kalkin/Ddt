@@ -9,7 +9,7 @@ unit module Ddt::Plugins::New;
 #| Create new module
 multi MAIN("new",
             $module is copy, #= Module::To::Create
-            :$license-name = 'GPLv3' #= License name
+            :$license-name = 'Artistic2' #= License name
         ) is export
 {
     my $main-dir = $module.subst: '::', '-', :g;
@@ -25,7 +25,7 @@ multi MAIN("new",
                             authors => [author()],
                             license => $spdx,
                             version => Version.new('0.0.1'),
-                            perl-version => $*PERL.version;
+                            raku-version => $*RAKU.version;
 
     my $meta-file = $main-dir.IO.child(<META6.json>);
     $meta-file.spurt: $meta.to-json(:skip-null);

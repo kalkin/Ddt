@@ -25,18 +25,18 @@ multi MAIN("test",
     @args.push: "--state=$state" if $state.defined;
 
     if $continues {
-        my Proc::Async $proc .= new: 'prove', @args, '--exec', 'perl6 -Ilib', @tests;
+        my Proc::Async $proc .= new: 'prove', @args, '--exec', 'raku -Ilib', @tests;
         $proc.start;
 
         $ddt.watch.act: {
             with $proc { .kill(9) }
             say "Restarting tests";
-            $proc = Proc::Async.new: 'prove', @args, '--exec', 'perl6 -Ilib', @tests;
+            $proc = Proc::Async.new: 'prove', @args, '--exec', 'raku -Ilib', @tests;
             $proc.start;
         };
-        without $proc { $proc = Proc::Async.new: 'prove', @args, '--exec', 'perl6 -Ilib', @tests;}
+        without $proc { $proc = Proc::Async.new: 'prove', @args, '--exec', 'raku -Ilib', @tests;}
         loop { FIRST { say "Waiting for changes" } }
     } else {
-        run 'prove', @args, '--exec', 'perl6 -Ilib', @tests;
+        run 'prove', @args, '--exec', 'raku -Ilib', @tests;
     }
 }
