@@ -30,5 +30,5 @@ multi to-sorted-json(Associative:D $d, :$indent = 0, :$first = 0) {
 
 multi to-sorted-json(Mu:U $, :$indent = 0, :$first = 0) { 'null' }
 multi to-sorted-json(Mu:D $s, :$indent = 0, :$first = 0) {
-    die "Can't serialize an object of type " ~ $s.WHAT.perl
+    die "Can't serialize an object of type " ~ $s.WHAT.raku
 }

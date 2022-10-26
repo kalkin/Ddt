@@ -22,7 +22,7 @@ sub to-name(Str:D $name, Str $dist-prefix?) of Str:D is export {
 sub name-to-file(Str:D $name) of Str:D is export {
     join("/",  gather for $name.split('::') -> $c {
         take $c
-    }) ~ ".raku"
+    }) ~ ".rakumod"
 }
 
 sub author is export { qx{git config  user.name}.chomp }

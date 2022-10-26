@@ -2,6 +2,7 @@
   "auth" : "kalkin",
   "authors" : [
     "Bahtiar `kalkin-` Gadimov",
+    "Polgár Márton",
     "Shoichi Kaji"
   ],
   "depends" : [
@@ -23,21 +24,21 @@
   "license" : "Artistic-2.0",
   "meta-version" : "0",
   "name" : "Ddt",
-  "perl" : "6.c",
   "provides" : {
-    "Ddt" : "lib/Ddt.pm6",
-    "Ddt::Distribution" : "lib/Ddt/Distribution.pm6",
-    "Ddt::JSON" : "lib/Ddt/JSON.pm6",
-    "Ddt::Plugins::Build" : "lib/Ddt/Plugins/Build.pm6",
-    "Ddt::Plugins::Deps" : "lib/Ddt/Plugins/Deps.pm6",
-    "Ddt::Plugins::Hack" : "lib/Ddt/Plugins/Hack.pm6",
-    "Ddt::Plugins::New" : "lib/Ddt/Plugins/New.pm6",
-    "Ddt::Plugins::Release" : "lib/Ddt/Plugins/Release.pm6",
-    "Ddt::Plugins::Test" : "lib/Ddt/Plugins/Test.pm6",
-    "Ddt::Plugins::Unit-Generator" : "lib/Ddt/Plugins/Unit-Generator.pm6",
-    "Ddt::Plugins::Watch" : "lib/Ddt/Plugins/Watch.pm6",
-    "Ddt::Template" : "lib/Ddt/Template.pm6"
+    "Ddt" : "lib/Ddt.rakumod",
+    "Ddt::Distribution" : "lib/Ddt/Distribution.rakumod",
+    "Ddt::JSON" : "lib/Ddt/JSON.rakumod",
+    "Ddt::Plugins::Build" : "lib/Ddt/Plugins/Build.rakumod",
+    "Ddt::Plugins::Deps" : "lib/Ddt/Plugins/Deps.rakumod",
+    "Ddt::Plugins::Hack" : "lib/Ddt/Plugins/Hack.rakumod",
+    "Ddt::Plugins::New" : "lib/Ddt/Plugins/New.rakumod",
+    "Ddt::Plugins::Release" : "lib/Ddt/Plugins/Release.rakumod",
+    "Ddt::Plugins::Test" : "lib/Ddt/Plugins/Test.rakumod",
+    "Ddt::Plugins::Unit-Generator" : "lib/Ddt/Plugins/Unit-Generator.rakumod",
+    "Ddt::Plugins::Watch" : "lib/Ddt/Plugins/Watch.rakumod",
+    "Ddt::Template" : "lib/Ddt/Template.rakumod"
   },
+  "raku" : "6.c",
   "source-url" : "https://github.com/kalkin/Ddt.git",
   "support" : {
     "source" : null
