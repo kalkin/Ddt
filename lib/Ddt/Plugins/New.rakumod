@@ -8,7 +8,7 @@ unit module Ddt::Plugins::New;
 
 #| Create new module
 multi MAIN("new",
-            $module is copy, #= Module::To::Create
+            $module, #= Module::To::Create
             :$license-name = 'Artistic2' #= License name
         ) is export
 {
@@ -19,15 +19,31 @@ multi MAIN("new",
     }
 
     mkdir $main-dir;
+    populate-dir $main-dir, $module, $license-name;
+}
+
+
+#| Create new module
+multi MAIN("new",
+            "here", #= create the module based on the current folder
+            :$license-name = 'Artistic2', #= License name
+            Bool :$as-name #= interpret the first argument of 'new' as module name
+        ) is export
+{
+    nextsame if $as-name;
+    populate-dir $*CWD, $*CWD.basename, $license-name;
+}
+
+sub populate-dir(IO() $main-dir, $module-name, $license-name) {
     my $license-holder = author() ~ " " ~ email();
     my $spdx = license($license-name).new($license-holder).spdx;
-    my $meta = META6.new:   name => $module,
+    my $meta = META6.new:   name => $module-name,
                             authors => [author()],
                             license => $spdx,
                             version => Version.new('0.0.1'),
                             raku-version => $*RAKU.version;
 
-    my $meta-file = $main-dir.IO.child(<META6.json>);
+    my $meta-file = $main-dir.child(<META6.json>);
     $meta-file.spurt: $meta.to-json(:skip-null);
     my $ddt = Ddt::Distribution.new: $meta-file;
     $ddt.generate-all: :force;

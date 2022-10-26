@@ -8,3 +8,5 @@ use Ddt::Plugins::New;
 use Ddt::Plugins::Release;
 use Ddt::Plugins::Test;
 use Ddt::Plugins::Watch;
+
+my %*SUB-MAIN-OPTS = :named-anywhere;
