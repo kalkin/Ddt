@@ -1,5 +1,7 @@
 use META6;
 use JSON::Fast;
+use Ddt;
+use Ddt::License;
 use Ddt::JSON;
 use File::Find;
 use License::Software:ver<0.3.*>;
@@ -111,9 +113,9 @@ method !make-directories {
 method generate-META6 {
     my $meta = $.META6;
 
-    $meta.raku-version = $*RAKU.version unless $meta.raku-version.defined;
-    if $meta.authors ~~ Empty || author() ∉ $meta.authors {
-        $meta.authors.push: author()
+    $meta.raku-version //= $*RAKU.version;
+    if $meta.authors ~~ Empty || git-user() ∉ $meta.authors {
+        $meta.authors.push: git-user
     }
     if $meta.test-depends ~~ Empty || "Test::META" ∉ $meta.test-depends {
         $meta.test-depends.push: "Test::META"
@@ -122,7 +124,7 @@ method generate-META6 {
     $meta.provides = self.find-provides;
     $meta.source-url = self.find-source-url() unless $meta.source-url.defined;
     $meta.version = "*" unless $meta.source-url.defined;
-    $meta.license = self.license.spdx unless !$meta.license.defined;
+    $_ = self.license.spdx with $meta.license;
 
     CATCH {
         note .message;
@@ -207,13 +209,14 @@ method !make-content {
 
 method !init-vcs-repo {
     my $git-dir = $.main-dir.absolute;
-    shell("cd $git-dir && git init", :out).out.slurp-rest;
-    shell("cd $git-dir && git add .", :out).out.slurp-rest;
+    qqx{cd $git-dir && git init}.slurp-rest;
+    qqx{cd $git-dir && git add .}.slurp-rest;
 }
 
 
 method license of License::Software::Abstract {
-    license($.META6.license).new: author() ~ " " ~ email();
+    my $known-license is default(Ddt::License) = (quietly license($.META6.license // ''));
+    $known-license.new: git-user() ~ " " ~ git-email;
 }
 
 method find-provides {
@@ -221,8 +224,6 @@ method find-provides {
         ==> map { self!to-module($_) => $_.relative($.main-dir) } ==> sort;
 }
 
-sub author { qx{git config user.name}.chomp }
-sub email { qx{git config user.email}.chomp }
 sub find-description($module-file) {
     my $content = $module-file.IO.slurp;
     if $content ~~ /^^

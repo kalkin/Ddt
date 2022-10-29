@@ -27,6 +27,7 @@
   "provides": {
     "Ddt": "lib/Ddt.rakumod",
     "Ddt::Distribution": "lib/Ddt/Distribution.rakumod",
+    "Ddt::License": "lib/Ddt/License.rakumod",
     "Ddt::JSON": "lib/Ddt/JSON.rakumod",
     "Ddt::Plugins::Build": "lib/Ddt/Plugins/Build.rakumod",
     "Ddt::Plugins::Deps": "lib/Ddt/Plugins/Deps.rakumod",
@@ -57,5 +58,5 @@
     "File::Temp",
     "Test::META"
   ],
-  "version": "0.6.1"
+  "version": "0.7.0"
 }

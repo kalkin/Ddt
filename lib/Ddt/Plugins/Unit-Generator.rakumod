@@ -79,7 +79,7 @@ multi MAIN("generate", "test",
         exit -1;
     }
     my $license = $dist.license.?header;
-    $license = "#`(\n" ~ $license ~ ')' with $license;
+    $_ = "#`(\n" ~ $license ~ ')' with $license;
     with $description {
         spurt $new-test, qq:to/END/;
         use v6;

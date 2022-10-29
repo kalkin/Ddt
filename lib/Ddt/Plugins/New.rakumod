@@ -1,5 +1,6 @@
 use Ddt;
 use Ddt::Distribution;
+use Ddt::License;
 
 use META6;
 use License::Software:ver<0.3.*>;
@@ -35,11 +36,12 @@ multi MAIN("new",
 }
 
 sub populate-dir(IO() $main-dir, $module-name, $license-name) {
-    my $license-holder = author() ~ " " ~ email();
-    my $spdx = license($license-name).new($license-holder).spdx;
+    my $license-holder = git-user() ~ " " ~ git-email;
+    my $known-license is default(Ddt::License) = quietly license($license-name);
+    my $spdx = $known-license.new($license-holder).spdx;
     my $meta = META6.new:   name => $module-name,
-                            authors => [author()],
-                            license => $spdx,
+                            authors => [git-user],
+                            license => $spdx // $license-name,
                             version => Version.new('0.0.1'),
                             raku-version => $*RAKU.version;
 
