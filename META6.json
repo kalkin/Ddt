@@ -27,8 +27,8 @@
   "provides": {
     "Ddt": "lib/Ddt.rakumod",
     "Ddt::Distribution": "lib/Ddt/Distribution.rakumod",
-    "Ddt::License": "lib/Ddt/License.rakumod",
     "Ddt::JSON": "lib/Ddt/JSON.rakumod",
+    "Ddt::License": "lib/Ddt/License.rakumod",
     "Ddt::Plugins::Build": "lib/Ddt/Plugins/Build.rakumod",
     "Ddt::Plugins::Deps": "lib/Ddt/Plugins/Deps.rakumod",
     "Ddt::Plugins::Hack": "lib/Ddt/Plugins/Hack.rakumod",
