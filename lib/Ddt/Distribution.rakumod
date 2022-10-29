@@ -215,8 +215,8 @@ method !init-vcs-repo {
 
 
 method license of License::Software::Abstract {
-    my $known-license is default(Ddt::License) = (quietly license($.META6.license // ''));
-    $known-license.new: git-user() ~ " " ~ git-email;
+    my $known-license is default(Ddt::License) = quietly license($.META6.license // '');
+    $known-license.new: :name($.META6.license // ''), git-user() ~ " " ~ git-email;
 }
 
 method find-provides {

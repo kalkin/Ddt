@@ -3,10 +3,18 @@ unit class Ddt::License does License::Software::Abstract;
 
 submethod aliases returns Array[Str]  { Array[Str].new }
 method files returns Hash:D { Hash.new }
-method header returns Str:D  { "This piece of software is released under licence '$!name'."  }
-method full-text returns Str:D  { "self.header()\nFor details, contact the author." }
-has Str $.name = 'DEMO';
-method note returns Str:D  { '' }
-method short-name returns Str:D  { $!name }
-method spdx returns Str:D  { $!name }
-submethod url returns Str:D  { '' }
+method header returns Str:D  { $!name && "This piece of software is released under license '$!name'."  }
+#method full-text returns Str:D  { "self.header()\nFor details, contact the author." }
+method full-text returns Str:D  { ... }
+has Str $.name;
+method !set-name($!name) { self }
+multi method new(Ddt::License: Str:D $holder-name, :$name!) {
+    self.new($holder-name, |%)!set-name($name)
+}
+multi method new(Ddt::License: :$name!) {
+    self.new(|%)!set-name($name)
+}
+method note returns Str  { '' }
+method short-name returns Str  { $!name }
+method spdx returns Str  { $!name }
+submethod url returns Str  { '' }
