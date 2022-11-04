@@ -19,7 +19,7 @@ DESCRIPTION
 
 
 
-**Ddt** is an authoring and distribution development tool for Perl6. It provides scaffolding for generating new distributions, packages, modules, grammers, classes and roles.
+**Ddt** is an authoring and distribution development tool for Raku. It provides scaffolding for generating new distributions, packages, modules, grammers, classes and roles.
 
 WARNING
 =======
@@ -84,7 +84,7 @@ Use `ddt -u deps`
 
   * Where is the spec of META6.json?
 
-Maybe https://github.com/perl6/ecosystem/blob/master/spec.pod or http://design.perl6.org/S22.html
+The documentation site describes the current practices pretty well at [https://docs.raku.org/language/modules#Distributing_modules](https://docs.raku.org/language/modules#Distributing_modules). The original design document of META6.json is available at [http://design.perl6.org/S22.html](http://design.perl6.org/S22.html).
 
   * How do I remove the travis badge?
 
@@ -114,3 +114,4 @@ COPYRIGHT AND LICENSE
   * Copyright © 2016-2017 Bahtiar `kalkin-` Gadimov
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+

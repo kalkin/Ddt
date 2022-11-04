@@ -116,7 +116,7 @@ sub local-mirror($uri) of IO::Path:D is export {
 
 =DESCRIPTION
 
-B<Ddt> is an authoring and distribution development tool for Perl6. It provides
+B<Ddt> is an authoring and distribution development tool for Raku. It provides
 scaffolding for generating new distributions, packages, modules, grammers,
 classes and roles.
 
@@ -178,7 +178,10 @@ Use C<ddt -u deps>
 
 =item Where is the spec of META6.json?
 
-Maybe L<https://github.com/perl6/ecosystem/blob/master/spec.pod> or L<http://design.perl6.org/S22.html>
+The documentation site describes the current practices pretty well at
+L<https://docs.raku.org/language/modules#Distributing_modules>. The original
+design document of META6.json is available at
+L<http://design.perl6.org/S22.html>.
 
 =item How do I remove the travis badge?
 
