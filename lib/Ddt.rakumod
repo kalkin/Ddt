@@ -183,11 +183,6 @@ L<https://docs.raku.org/language/modules#Distributing_modules>. The original
 design document of META6.json is available at
 L<http://design.perl6.org/S22.html>.
 
-=item How do I remove the travis badge?
-
-Remove .travis.yml
-
-
 =head1 SEE ALSO
 
 =item L<https://github.com/skaji/mi6>

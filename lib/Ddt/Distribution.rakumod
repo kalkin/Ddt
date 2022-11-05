@@ -140,15 +140,6 @@ method generate-README {
     {
         if my $markdown = self.render-markdown( $file )
         {
-            my ($user, $repo) = self.guess-user-and-repo();
-            my $header = do if $user and ".travis.yml".IO.e {
-                "[![Build Status](https://travis-ci.org/$user/$repo.svg?branch=master)]"
-                    ~ "(https://travis-ci.org/$user/$repo)"
-                    ~ "\n\n";
-            } else {
-                "";
-            }
-
             return $.main-dir.child("README.md").spurt: $header ~ $markdown;
         }
     }
@@ -197,7 +188,6 @@ method !make-content {
         $.test-dir.child(<00-meta.t>)  test-meta
         $.test-dir.child(<01-basic.t>) test
         $.main-dir.child(<.gitignore>)   gitignore
-        $.main-dir.child(<.travis.yml>)  travis
     >>;
     for %map.kv -> $f, $c {
         spurt($f, %content{$c});
@@ -279,20 +269,6 @@ method !to-file(Str $module) {
 
 method !name-to-file(Str $module is copy) {
     self!to-file: $module;
-}
-
-submethod guess-user-and-repo() {
-    my $url = self.find-source-url();
-    return if $url eq "";
-    if $url ~~ m{ (git|https?) '://'
-        [<-[/]>+] '/'
-        $<user>=[<-[/]>+] '/'
-        $<repo>=[.+?] [\.git]?
-    $} {
-        return $/<user>, $/<repo>;
-    } else {
-        return;
-    }
 }
 
 # A hack for getting identical json on each run

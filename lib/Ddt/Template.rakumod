@@ -23,20 +23,6 @@ Session.vim
 tags
 EOF
 
-travis => qq:to/EOF/,
-os:
-  - linux
-  - osx
-language: raku
-raku:
-  - latest
-install:
-  - rakubrew build-zef
-  - zef --/test --deps-only install .
-script:
-  - zef test .
-sudo: false
-EOF
 
 test => qq:to/END_OF_TEST/,
 use v6;
