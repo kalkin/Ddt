@@ -20,7 +20,7 @@ subtest "ddt new command", {
     ok "Foo-Bar".IO.d, "Distribution directory is created";
     chdir "Foo-Bar";
     subtest "All expected files exist", {
-        my @expected = <.git  .gitignore  .travis.yml  LICENSE  META6.json  README.md  bin  lib  t>;
+        my @expected = <.git  .gitignore  .github/workflows/test.yaml  LICENSE  META6.json  README.md  bin  lib  t>;
         plan @expected.elems;
         for @expected {
             ok $*CWD.child($_).e, "$_ exists"

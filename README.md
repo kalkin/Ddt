@@ -86,10 +86,6 @@ Use `ddt -u deps`
 
 The documentation site describes the current practices pretty well at [https://docs.raku.org/language/modules#Distributing_modules](https://docs.raku.org/language/modules#Distributing_modules). The original design document of META6.json is available at [http://design.perl6.org/S22.html](http://design.perl6.org/S22.html).
 
-  * How do I remove the travis badge?
-
-Remove .travis.yml
-
 SEE ALSO
 ========
 

@@ -42,6 +42,7 @@ has $.ignore-rules  =  do {
     File::Ignore.parse: $rules;
 };
 has IO::Path $.bin-dir       =  enhance-io-path-class $!main-dir.child(<bin>), $!ignore-rules;
+has IO::Path $.github-workflows = $!main-dir.child(<.github>).child(<workflows>);
 has IO::Path $.hooks-dir     =  $!main-dir.child(<hooks>);
 has IO::Path $.lib-dir       =  enhance-io-path-class $!main-dir.child(<lib>), $!ignore-rules;
 has IO::Path $.test-dir      =  enhance-io-path-class $!main-dir.child(<t>), $!ignore-rules;
@@ -102,6 +103,7 @@ sub in-git-repo returns Bool:D {
 
 method !make-directories {
     $.main-dir.mkdir;
+    $.github-workflows.mkdir;
     $.bin-dir.mkdir;
     $.hooks-dir.mkdir;
     $.lib-dir.mkdir;
@@ -140,15 +142,6 @@ method generate-README {
     {
         if my $markdown = self.render-markdown( $file )
         {
-            my ($user, $repo) = self.guess-user-and-repo();
-            my $header = do if $user and ".travis.yml".IO.e {
-                "[![Build Status](https://travis-ci.org/$user/$repo.svg?branch=master)]"
-                    ~ "(https://travis-ci.org/$user/$repo)"
-                    ~ "\n\n";
-            } else {
-                "";
-            }
-
             return $.main-dir.child("README.md").spurt: $header ~ $markdown;
         }
     }
@@ -197,7 +190,7 @@ method !make-content {
         $.test-dir.child(<00-meta.t>)  test-meta
         $.test-dir.child(<01-basic.t>) test
         $.main-dir.child(<.gitignore>)   gitignore
-        $.main-dir.child(<.travis.yml>)  travis
+        $.github-workflows.child(<test.yaml>)  github-action
     >>;
     for %map.kv -> $f, $c {
         spurt($f, %content{$c});
@@ -279,20 +272,6 @@ method !to-file(Str $module) {
 
 method !name-to-file(Str $module is copy) {
     self!to-file: $module;
-}
-
-submethod guess-user-and-repo() {
-    my $url = self.find-source-url();
-    return if $url eq "";
-    if $url ~~ m{ (git|https?) '://'
-        [<-[/]>+] '/'
-        $<user>=[<-[/]>+] '/'
-        $<repo>=[.+?] [\.git]?
-    $} {
-        return $/<user>, $/<repo>;
-    } else {
-        return;
-    }
 }
 
 # A hack for getting identical json on each run
