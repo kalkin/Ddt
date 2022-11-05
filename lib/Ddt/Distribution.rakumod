@@ -176,7 +176,6 @@ method find-pod-for( $module-file )
         $module-file,
         $module-file.subst( / \. raku $ /, '.pod6').subst('lib', 'docs');
         $module-file.subst( / \. rakumod $ /, '.pod6'),
-        $module-file,
         $module-file.subst( / \. rakumod $ /, '.pod6').subst('lib', 'docs');
 
     return @candidates.grep({ .IO.e });
