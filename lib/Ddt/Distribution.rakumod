@@ -42,6 +42,7 @@ has $.ignore-rules  =  do {
     File::Ignore.parse: $rules;
 };
 has IO::Path $.bin-dir       =  enhance-io-path-class $!main-dir.child(<bin>), $!ignore-rules;
+has IO::Path $.github-workflows = $!main-dir.child(<.github>).child(<workflows>);
 has IO::Path $.hooks-dir     =  $!main-dir.child(<hooks>);
 has IO::Path $.lib-dir       =  enhance-io-path-class $!main-dir.child(<lib>), $!ignore-rules;
 has IO::Path $.test-dir      =  enhance-io-path-class $!main-dir.child(<t>), $!ignore-rules;
@@ -102,6 +103,7 @@ sub in-git-repo returns Bool:D {
 
 method !make-directories {
     $.main-dir.mkdir;
+    $.github-workflows.mkdir;
     $.bin-dir.mkdir;
     $.hooks-dir.mkdir;
     $.lib-dir.mkdir;
@@ -188,6 +190,7 @@ method !make-content {
         $.test-dir.child(<00-meta.t>)  test-meta
         $.test-dir.child(<01-basic.t>) test
         $.main-dir.child(<.gitignore>)   gitignore
+        $.github-workflows.child(<test.yaml>)  github-action
     >>;
     for %map.kv -> $f, $c {
         spurt($f, %content{$c});
